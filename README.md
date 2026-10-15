@@ -5,8 +5,9 @@ A standalone mod (separate from Rocket's Airstrike in the repo root). To install
 ## Features
 
 ### "End it"
-- **Button:** a downed or injured colonist gets an *End it* gizmo, shown when they're the only pawn selected. This works while downed.
-- **Right-click:** if the colonist can stand, select them and right-click on the colonist themself to get *End it*.
+- **Right-click:** select any colonist (or slave) and right-click on that pawn themself to get *End it*. This works whether they're healthy, hurt or downed. If they can't do it right now (no weapon in reach, unconscious, can't use their hands...), the option is shown greyed out with the reason.
+- **Button:** a downed or injured colonist also gets an *End it* gizmo, shown when they're the only pawn selected.
+- **Require injury (setting, off by default):** when on, only downed or injured pawns get the option.
 - **Weapon search order:** the equipped weapon first, then the inventory, then the floor. A downed pawn can only reach adjacent cells. A pawn who can stand will walk up to 12 cells to pick a weapon up.
 - **Usable weapons:**
   - Industrial or later guns that fire bullets. Launchers, grenades and bows don't count.

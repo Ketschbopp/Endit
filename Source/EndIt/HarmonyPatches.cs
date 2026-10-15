@@ -9,15 +9,59 @@ using Verse.AI;
 
 namespace EndIt
 {
-    /// <summary>Adds the "End it" button to hurt colonists (works while downed, unlike the right-click menu).</summary>
+    /// <summary>Adds the "End it" button to hurt or downed colonists. Healthy ones use the right-click menu.</summary>
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
     public static class Patch_Pawn_GetGizmos
     {
         public static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> __result, Pawn __instance)
         {
             foreach (Gizmo g in __result) yield return g;
-            if (EndItUtility.IsCandidate(__instance) && Find.Selector.NumSelected == 1)
+            if (Find.Selector.NumSelected == 1 && EndItUtility.IsCandidate(__instance) && EndItUtility.IsHurt(__instance))
                 yield return EndItUtility.MakeGizmo(__instance);
+        }
+    }
+
+    /// <summary>
+    /// Vanilla refuses to open a right-click menu for a downed pawn ("is incapacitated").
+    /// Let it through when the downed pawn is being right-clicked on themself, so "End it" can be offered.
+    /// </summary>
+    [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.ShouldGenerateFloatMenuForPawn))]
+    public static class Patch_FloatMenuMakerMap_ShouldGenerateFloatMenuForPawn
+    {
+        public static void Postfix(Pawn pawn, ref AcceptanceReport __result)
+        {
+            if (__result.Accepted || pawn == null || !pawn.Downed) return;
+            if (EndItUtility.SelfClickedPawn(new List<Pawn> { pawn }, UI.MouseMapPosition()) != null)
+                __result = AcceptanceReport.WasAccepted;
+        }
+    }
+
+    /// <summary>
+    /// Right-clicking the selected pawn on themself offers "End it", whether they're healthy, hurt or downed.
+    /// </summary>
+    [HarmonyPatch(typeof(FloatMenuMakerMap), nameof(FloatMenuMakerMap.GetOptions))]
+    public static class Patch_FloatMenuMakerMap_GetOptions
+    {
+        public static bool Prefix(List<Pawn> selectedPawns, Vector3 clickPos, ref FloatMenuContext context,
+            ref List<FloatMenuOption> __result, out FloatMenuOption __state)
+        {
+            __state = null;
+            Pawn pawn = EndItUtility.SelfClickedPawn(selectedPawns, clickPos);
+            if (pawn == null || !pawn.Downed) return true;
+
+            // A downed pawn can't follow any of the vanilla orders, so the menu holds only "End it".
+            __state = EndItUtility.MakeFloatMenuOption(pawn);
+            context = new FloatMenuContext(selectedPawns, clickPos, pawn.Map);
+            __result = new List<FloatMenuOption> { __state };
+            return false;
+        }
+
+        public static void Postfix(List<Pawn> selectedPawns, Vector3 clickPos, List<FloatMenuOption> __result,
+            FloatMenuOption __state)
+        {
+            if (__state != null || __result == null) return;
+            Pawn pawn = EndItUtility.SelfClickedPawn(selectedPawns, clickPos);
+            if (pawn != null) __result.Add(EndItUtility.MakeFloatMenuOption(pawn));
         }
     }
 

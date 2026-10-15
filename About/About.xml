@@ -6,7 +6,7 @@
     <li>1.7</li>
   </supportedVersions>
   <packageId>Rockets.EndIt</packageId>
-  <description>Adds an "End it" option to downed or injured colonists who have a gun or blade on them or within reach. The pawn raises the weapon to their own head (or throat, for blades) and pulls the trigger. The wound is always severe, but not always fatal.
+  <description>Adds an "End it" option to the right-click menu of any colonist (healthy, injured or downed) who has a gun or blade on them or within reach. Select the pawn and right-click on them. The pawn raises the weapon to their own head (or throat, for blades) and pulls the trigger. The wound is always severe, but not always fatal.
 
 Also replaces the throat-cut prisoner, slave and guilty-colonist executions with a gunshot when the executioner is carrying a gun.
 

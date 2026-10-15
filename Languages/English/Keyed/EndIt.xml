@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <EndIt_Label>End it</EndIt_Label>
+  <EndIt_LabelWith>End it ({0})</EndIt_LabelWith>
   <EndIt_Desc>{0} has had enough. They will turn their {1} on themselves.\n\nThe wound will be severe, but it is not guaranteed to be fatal.</EndIt_Desc>
   <EndIt_Confirm>Are you sure you want {0} to end it with their {1}?\n\nThis cannot be undone.</EndIt_Confirm>
   <EndIt_ConfirmTitle>End it</EndIt_ConfirmTitle>

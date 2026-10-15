@@ -10,7 +10,7 @@ namespace EndIt
         public float deathChancePistol = 0.80f;
         public float deathChanceRifle = 0.90f;
         public float deathChanceBlade = 0.60f;
-        public bool requireInjury = true;
+        public bool requireInjury = false;
         public bool confirm = true;
         public bool gunExecutions = true;
         public int executionAimTicks = 75;
@@ -31,7 +31,7 @@ namespace EndIt
             Scribe_Values.Look(ref deathChancePistol, "deathChancePistol", 0.80f);
             Scribe_Values.Look(ref deathChanceRifle, "deathChanceRifle", 0.90f);
             Scribe_Values.Look(ref deathChanceBlade, "deathChanceBlade", 0.60f);
-            Scribe_Values.Look(ref requireInjury, "requireInjury", true);
+            Scribe_Values.Look(ref requireInjury, "requireInjury", false);
             Scribe_Values.Look(ref confirm, "confirm", true);
             Scribe_Values.Look(ref gunExecutions, "gunExecutions", true);
             Scribe_Values.Look(ref executionAimTicks, "executionAimTicks", 75);

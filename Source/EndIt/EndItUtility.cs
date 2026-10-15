@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -93,6 +94,36 @@ namespace EndIt
             }
         }
 
+        /// <summary>The right-click menu entry; disabled with the reason when the pawn can't do it right now.</summary>
+        public static FloatMenuOption MakeFloatMenuOption(Pawn pawn)
+        {
+            if (!CanEndIt(pawn, out string reason, out ThingWithComps weapon, out _))
+                return new FloatMenuOption("EndIt_Label".Translate() + ": " + reason, null);
+
+            return new FloatMenuOption("EndIt_LabelWith".Translate(weapon.LabelNoCount), () => TryOrder(pawn),
+                MenuOptionPriority.Low);
+        }
+
+        /// <summary>
+        /// The single selected pawn, if the right-click landed on that pawn themself and "End it" applies to them.
+        /// </summary>
+        public static Pawn SelfClickedPawn(List<Pawn> selectedPawns, Vector3 clickPos)
+        {
+            if (selectedPawns == null || selectedPawns.Count != 1) return null;
+            Pawn pawn = selectedPawns[0];
+            if (!IsCandidate(pawn) || pawn.Map != Find.CurrentMap) return null;
+            return IsUnderClick(pawn, clickPos) ? pawn : null;
+        }
+
+        private static bool IsUnderClick(Pawn pawn, Vector3 clickPos)
+        {
+            if (pawn.OccupiedRect().Contains(IntVec3.FromVector3(clickPos))) return true;
+            // Moving pawns are drawn between cells.
+            Vector3 d = clickPos - pawn.DrawPos;
+            d.y = 0f;
+            return d.sqrMagnitude <= 0.5f * 0.5f;
+        }
+
         public static Command MakeGizmo(Pawn pawn)
         {
             bool can = CanEndIt(pawn, out string reason, out ThingWithComps weapon, out _);
@@ -106,27 +137,6 @@ namespace EndIt
             };
             if (!can) cmd.Disable(reason);
             return cmd;
-        }
-    }
-
-    /// <summary>Right-clicking a selected colonist on themselves offers "End it".</summary>
-    public class FloatMenuOptionProvider_EndIt : FloatMenuOptionProvider
-    {
-        protected override bool Drafted => true;
-        protected override bool Undrafted => true;
-        protected override bool Multiselect => false;
-        protected override bool RequiresManipulation => true;
-        protected override bool CanSelfTarget => true;
-
-        protected override FloatMenuOption GetSingleOptionFor(Pawn clickedPawn, FloatMenuContext context)
-        {
-            Pawn pawn = context.FirstSelectedPawn;
-            if (pawn == null || clickedPawn != pawn || !EndItUtility.IsCandidate(pawn)) return null;
-
-            if (!EndItUtility.CanEndIt(pawn, out string reason, out _, out _))
-                return new FloatMenuOption("EndIt_Label".Translate() + ": " + reason, null);
-
-            return new FloatMenuOption("EndIt_Label".Translate(), () => EndItUtility.TryOrder(pawn), MenuOptionPriority.Low);
         }
     }
 }
