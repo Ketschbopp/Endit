@@ -150,7 +150,8 @@ namespace EndIt
         }
 
         /// <summary>Gunshot replacement for vanilla's throat-cut execution.</summary>
-        public static void ExecuteByGunshot(Pawn executioner, Pawn victim, ThingWithComps weapon, DamageDef damageDef = null)
+        public static void ExecuteByGunshot(Pawn executioner, Pawn victim, ThingWithComps weapon, DamageDef damageDef = null,
+            bool notifyDeath = false)
         {
             Vector3 from = executioner.DrawPos;
             Vector3 dir = victim.DrawPos - from;
@@ -169,7 +170,7 @@ namespace EndIt
             dinfo.SetAllowDamagePropagation(false);
             dinfo.SetIgnoreArmor(true);
 
-            victim.forceNoDeathNotification = true;
+            victim.forceNoDeathNotification = !notifyDeath;
             try
             {
                 victim.TakeDamage(dinfo);

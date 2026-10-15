@@ -32,6 +32,12 @@ Select a colonist and right-click a **prisoner** or a **downed enemy** to get *E
 - Downed enemies: just a kill, with no execution thoughts.
 - Works regardless of the "Executioners with a gun shoot the prisoner" setting.
 
+### Mercy kill
+Right-click a **downed, unconscious friendly pawn** (a colonist, an ally, a visitor or a tame animal) with a gun-carrying colonist selected to get *Mercy kill (name) with (gun)*. It works like the right-click execution: walk up, aim, one shot to the head.
+- For your own colonists and animals you're asked to confirm first (turn this off with the "Ask for confirmation" setting).
+- It isn't an execution: no execution thoughts, and the death is announced as "(name) was given a merciful death." The usual thoughts about someone dying still apply.
+- If the pawn wakes up before the shot, the order is called off.
+
 ### Russian roulette (mental break)
 An extreme mental break that can only happen to a pawn carrying a **revolver**, either equipped or in their inventory. Any gun with "revolver" in its name counts.
 - The pawn equips the revolver if it's in their inventory, and puts whatever they were holding into their inventory.
