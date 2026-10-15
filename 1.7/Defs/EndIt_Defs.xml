@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <JobDef>
+    <defName>EndIt_EndIt</defName>
+    <driverClass>EndIt.JobDriver_EndIt</driverClass>
+    <reportString>ending it.</reportString>
+    <playerInterruptible>true</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+    <neverShowWeapon>true</neverShowWeapon>
+    <alwaysShowReport>true</alwaysShowReport>
+  </JobDef>
+
+  <!-- Self-inflicted gunshot. Same wound behaviour as a regular bullet. -->
+  <DamageDef>
+    <defName>EndIt_SelfShot</defName>
+    <label>self-inflicted gunshot</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <deathMessage>{0} died by their own hand.</deathMessage>
+    <hediff>Gunshot</hediff>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <impactSoundType>Bullet</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0~0.7</overkillPctToDestroyPart>
+    <isRanged>true</isRanged>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+  </DamageDef>
+
+  <!-- Self-inflicted blade wound. -->
+  <DamageDef>
+    <defName>EndIt_SelfCut</defName>
+    <label>self-inflicted cut</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <deathMessage>{0} died by their own hand.</deathMessage>
+    <hediff>Cut</hediff>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <impactSoundType>Slice</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0~0.7</overkillPctToDestroyPart>
+  </DamageDef>
+
+  <!-- Gunshot execution. Flagged as an execution like vanilla's ExecutionCut. -->
+  <DamageDef>
+    <defName>EndIt_ExecutionShot</defName>
+    <label>execution shot</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <execution>true</execution>
+    <deathMessage>{0} has been executed by gunshot.</deathMessage>
+    <hediff>Gunshot</hediff>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <impactSoundType>Bullet</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0~0.7</overkillPctToDestroyPart>
+    <isRanged>true</isRanged>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+  </DamageDef>
+
+</Defs>

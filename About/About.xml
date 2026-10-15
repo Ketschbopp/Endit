@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>End It</name>
+  <author>Rocket</author>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <packageId>Rockets.EndIt</packageId>
+  <description>Adds an "End it" option to downed or injured colonists who have a gun or blade on them or within reach. The pawn raises the weapon to their own head (or throat, for blades) and pulls the trigger. The wound is always severe, but not always fatal.
+
+Also replaces the throat-cut prisoner, slave and guilty-colonist executions with a gunshot when the executioner is carrying a gun.
+
+Death chances and gun executions can be tuned in the mod settings.</description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+</ModMetaData>

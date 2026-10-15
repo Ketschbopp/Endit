@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EndIt_Label>End it</EndIt_Label>
+  <EndIt_Desc>{0} has had enough. They will turn their {1} on themselves.\n\nThe wound will be severe, but it is not guaranteed to be fatal.</EndIt_Desc>
+  <EndIt_Confirm>Are you sure you want {0} to end it with their {1}?\n\nThis cannot be undone.</EndIt_Confirm>
+  <EndIt_ConfirmTitle>End it</EndIt_ConfirmTitle>
+
+  <EndIt_NotInjured>{0} is not hurt badly enough.</EndIt_NotInjured>
+  <EndIt_NoWeapon>No gun or blade on {0} or within reach.</EndIt_NoWeapon>
+  <EndIt_CantManipulate>{0} can't hold a weapon.</EndIt_CantManipulate>
+  <EndIt_NotAwake>{0} is unconscious.</EndIt_NotAwake>
+  <EndIt_MentalState>{0} is not in control of themselves.</EndIt_MentalState>
+  <EndIt_Busy>{0} is already doing it.</EndIt_Busy>
+
+  <EndIt_Survived>{0} survived the attempt to end it.</EndIt_Survived>
+
+  <EndIt_Settings_DeathChancePistol>Death chance (pistol): {0}</EndIt_Settings_DeathChancePistol>
+  <EndIt_Settings_DeathChanceRifle>Death chance (rifle / long gun): {0}</EndIt_Settings_DeathChanceRifle>
+  <EndIt_Settings_DeathChanceBlade>Death chance (knife / blade): {0}</EndIt_Settings_DeathChanceBlade>
+  <EndIt_Settings_RequireInjury>Require the pawn to be downed or injured</EndIt_Settings_RequireInjury>
+  <EndIt_Settings_Confirm>Ask for confirmation</EndIt_Settings_Confirm>
+  <EndIt_Settings_GunExecutions>Executioners with a gun shoot the prisoner instead of cutting</EndIt_Settings_GunExecutions>
+  <EndIt_Settings_ExecutionAim>Execution aim time: {0} s</EndIt_Settings_ExecutionAim>
+</LanguageData>
