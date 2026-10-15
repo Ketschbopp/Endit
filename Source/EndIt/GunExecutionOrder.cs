@@ -20,11 +20,19 @@ namespace EndIt
                        || IsMercyTarget(victim));
         }
 
-        /// <summary>A friendly (non-hostile, non-prisoner) pawn that is down, conscious or not.</summary>
+        // The health tab's "medium" pain starts here; "severe" and "extreme" are above it.
+        private const float ModeratePain = 0.15f;
+
+        /// <summary>
+        /// A friendly (non-hostile, non-prisoner) pawn that is down and suffering: in moderate pain or worse, or
+        /// unconscious and bleeding.
+        /// </summary>
         public static bool IsMercyTarget(Pawn victim)
         {
-            return victim != null && victim.Downed && !victim.IsPrisonerOfColony
-                   && !victim.HostileTo(Faction.OfPlayer);
+            if (victim == null || !victim.Downed || victim.IsPrisonerOfColony || victim.HostileTo(Faction.OfPlayer))
+                return false;
+            HediffSet health = victim.health.hediffSet;
+            return health.PainTotal >= ModeratePain || (!victim.Awake() && health.BleedRateTotal > 0f);
         }
 
         public static void AddOptions(List<Pawn> selectedPawns, Vector3 clickPos, List<FloatMenuOption> options)
