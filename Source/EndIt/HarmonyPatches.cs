@@ -76,7 +76,14 @@ namespace EndIt
     {
         public static void Postfix(DrawPhase phase, Vector3 drawLoc, Pawn ___pawn)
         {
-            if (phase != DrawPhase.Draw || ___pawn?.jobs?.curDriver is not IEndItAnimated driver || !driver.Aiming) return;
+            if (phase != DrawPhase.Draw) return;
+            object curDriver = ___pawn?.jobs?.curDriver;
+            if (curDriver is JobDriver_Torture torture)
+            {
+                torture.DrawTools(drawLoc);
+                return;
+            }
+            if (curDriver is not IEndItAnimated driver || !driver.Aiming) return;
             EndItAnimation.Draw(___pawn, driver, drawLoc);
         }
     }

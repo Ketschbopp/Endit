@@ -57,6 +57,40 @@ An extreme mental break that can only happen to a pawn carrying a **revolver**, 
 - **Consequences:** same mood effects, history event and tale as a vanilla execution, and no death letter.
 - If there's no free gallows, the warden won't start, and the job shows "No free gallows". Changing the prisoner's mode before they're on the gallows calls it off.
 
+### Torture (the Bad Chair)
+- **Research:** *Interrogation chair* (medieval, 500 points).
+- **Build:** the *Bad Chair* in the **Security** tab: 50 wood and 25 steel, construction skill 4. It's rotatable; the torturer works from the cell in front of it.
+- **Use:** select the chair and press **Torture...**. Pick the **prisoner**, the **torturer** (anyone who can do violence and use their hands), the **method**, the **reason**, the **duration** (1 to 8 hours) and whether to **stop before it kills them** (on by default).
+- The torturer carries the prisoner to the chair, straps them in, steps to the front and works on them in rounds (about every 4 seconds at normal speed) until the time is up. A progress bar shows how far along it is. **Stop torture** on the chair ends it early. Afterwards the torturer takes the prisoner back to their bed.
+
+**Methods**
+
+| Method | Animation | During | After |
+|---|---|---|---|
+| Beating | Punches with a lunge; the prisoner recoils | Bruises, sometimes a cracked rib | Heal normally, can scar |
+| Waterboarding | Cloth over the face, bucket tipped over it, water splashing; the prisoner thrashes | *Near drowning* (breathing and consciousness down, painful); pours pause while they're close to drowning | Clears over a few hours |
+| Branding | Red-hot iron pressed on, smoke and glow | Burns | Heal, can scar |
+| Electric shock | Prod with sparks; the prisoner convulses | *Electric shock* (pain, spasms, a struggling heart) and small burns | Wears off over about a day |
+| Thumbscrews | Iron vice on the hand, twisted | Crushed fingers | Heal, or are lost for good if badly crushed |
+| Cutting | Knife dragged along an arm, blood | Shallow cuts that bleed | Heal, can scar |
+| Foot whipping | Cane raised and whipped across the soles | Bruised feet | Heal |
+| Ice water | Buckets of water poured over; the prisoner shivers | Vanilla *hypothermia* | Fades once warm |
+
+Electric shock needs the Electricity research. Every method also adds *being tortured* (extra pain) while the session lasts.
+
+**Reasons**
+- **Get intel:** at the end, a chance they break and talk (higher with the torturer's Social skill, more hours, and harsher methods; waterboarding is best). If they do, you get a real opportunity on the world map: an enemy camp or a hidden item stash. Each prisoner only talks once (*interrogated*).
+- **Break their will:** wears down resistance and will twice as fast, so they're much easier to recruit or enslave.
+- **For fun:** no questions. Bloodlust pawns love it and get recreation from it.
+
+**Afterwards**
+- The prisoner gets *torture trauma* (consciousness down a little, phantom pain at higher severity), which fades over about three weeks, and a "I was tortured" memory (-25 mood).
+- Their resistance and will drop, more the longer it went on.
+- The torturer feels bad about it (-8), unless they're a psychopath. Bloodlust pawns enjoy it (+6, or +10 for fun).
+- Other colonists get "prisoner tortured" (-3), except psychopaths and bloodlust pawns.
+- A non-hostile prisoner's faction loses 15 goodwill.
+- With "stop before it kills them" on, the torturer holds back near the limits and stops if the prisoner nears death (heavy blood loss, near drowning, heart arrhythmia, deep hypothermia, very poor health). With it off, the prisoner can die.
+
 ## Combat Extended
 End It works with or without [Combat Extended](https://github.com/CombatExtended-Continued/CombatExtended). It doesn't depend on it; the support switches on by itself when CE is loaded.
 - CE's guns are recognised as guns, so End it, gun executions, right-click Execute and Mercy kill, and Russian roulette all work with them. Launchers, grenades and bows are still excluded.

@@ -94,6 +94,19 @@ namespace EndIt
         public static JobDef EndIt_HangPrisoner;
         public static JobDef EndIt_Hanged;
         public static HediffDef EndIt_Hanging;
+        public static ThingDef EndIt_BadChair;
+        public static JobDef EndIt_Torture;
+        public static JobDef EndIt_BeingTortured;
+        public static HediffDef EndIt_UnderTorture;
+        public static HediffDef EndIt_NearDrowning;
+        public static HediffDef EndIt_ElectricShock;
+        public static HediffDef EndIt_TortureTrauma;
+        public static HediffDef EndIt_Interrogated;
+        public static ThoughtDef EndIt_WasTortured;
+        public static ThoughtDef EndIt_TorturedSomeone;
+        public static ThoughtDef EndIt_TorturedEnjoyed;
+        public static ThoughtDef EndIt_TorturedForFunEnjoyed;
+        public static ThoughtDef EndIt_PrisonerTortured;
 
         static EndItDefOf()
         {
