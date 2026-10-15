@@ -155,10 +155,10 @@ namespace EndIt
             base.PostDraw();
             BrainwashSession s = session;
             if (s == null || !s.Started || !Powered || parent.Rotation != Rot4.North) return;
-            Vector3 pos = parent.DrawPos + new Vector3(-0.074f, 0f, 0.57f);
+            Vector3 pos = parent.DrawPos + new Vector3(-0.086f, 0f, 0.578f);
             pos.y = AltitudeLayer.BuildingOnTop.AltitudeFor();
             float angle = Find.TickManager.TicksGame * 6f % 360f;
-            Matrix4x4 m = Matrix4x4.TRS(pos, Quaternion.AngleAxis(angle, Vector3.up), new Vector3(0.52f, 1f, 0.52f));
+            Matrix4x4 m = Matrix4x4.TRS(pos, Quaternion.AngleAxis(angle, Vector3.up), new Vector3(0.48f, 1f, 0.48f));
             Graphics.DrawMesh(MeshPool.plane10, m, SpiralMat, 0);
         }
 
