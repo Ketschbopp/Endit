@@ -72,4 +72,30 @@
     <makesAnimalsFlee>true</makesAnimalsFlee>
   </DamageDef>
 
+  <!-- Shooting a downed enemy. Like the execution shot, but not flagged as an execution. -->
+  <DamageDef>
+    <defName>EndIt_FinishingShot</defName>
+    <label>gunshot</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <deathMessage>{0} has been shot dead.</deathMessage>
+    <hediff>Gunshot</hediff>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <impactSoundType>Bullet</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+    <overkillPctToDestroyPart>0~0.7</overkillPctToDestroyPart>
+    <isRanged>true</isRanged>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+  </DamageDef>
+
+  <!-- Right-click execution of a prisoner or downed enemy with a gun. -->
+  <JobDef>
+    <defName>EndIt_GunExecution</defName>
+    <driverClass>EndIt.JobDriver_GunExecution</driverClass>
+    <reportString>executing TargetA.</reportString>
+    <playerInterruptible>true</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+  </JobDef>
+
 </Defs>

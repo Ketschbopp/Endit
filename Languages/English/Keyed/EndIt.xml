@@ -14,6 +14,11 @@
   <EndIt_Busy>{0} is already doing it.</EndIt_Busy>
 
   <EndIt_Seppuku>{0} has cut open their stomach and is bleeding out.</EndIt_Seppuku>
+  <EndIt_GunExecute>Execute {0} with {1}</EndIt_GunExecute>
+  <EndIt_GunExecute_NoGun>{0} needs a gun equipped</EndIt_GunExecute_NoGun>
+  <EndIt_GunExecute_NonViolent>{0} is incapable of violence</EndIt_GunExecute_NonViolent>
+  <EndIt_GunExecute_NoPath>no path</EndIt_GunExecute_NoPath>
+  <EndIt_GunExecute_Reserved>someone else is busy with them</EndIt_GunExecute_Reserved>
   <EndIt_Survived>{0} survived the attempt to end it.</EndIt_Survived>
 
   <EndIt_Settings_DeathChancePistol>Death chance (pistol): {0}</EndIt_Settings_DeathChancePistol>

@@ -83,6 +83,8 @@ namespace EndIt
         public static DamageDef EndIt_SelfCut;
         public static DamageDef EndIt_Seppuku;
         public static DamageDef EndIt_ExecutionShot;
+        public static DamageDef EndIt_FinishingShot;
+        public static JobDef EndIt_GunExecution;
 
         static EndItDefOf()
         {

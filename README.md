@@ -25,6 +25,13 @@ A standalone mod (separate from Rocket's Airstrike in the repo root). To install
 ### Gun executions
 When the executioner has a gun equipped, prisoner, slave and guilty-colonist executions become a gunshot to the head instead of a throat cut. The executioner aims at the victim first; the aim time is set in the mod settings. Thoughts, records and tales are the same as vanilla. Executions without a gun stay vanilla.
 
+### Right-click executions
+Select a colonist and right-click a **prisoner** or a **downed enemy** to get *Execute (name) with (gun)*. The colonist walks up, aims for the execution aim time, and shoots them in the head.
+- Needs a gun equipped (the same guns that count for End it). Without one, or if the colonist is incapable of violence or can't reach the target, the option is greyed out with the reason.
+- Prisoners: same thoughts, tale and history event as a vanilla prisoner execution.
+- Downed enemies: just a kill, with no execution thoughts.
+- Works regardless of the "Executioners with a gun shoot the prisoner" setting.
+
 ## Building
 ```
 cd Source/EndIt

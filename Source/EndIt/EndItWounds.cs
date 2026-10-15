@@ -150,7 +150,7 @@ namespace EndIt
         }
 
         /// <summary>Gunshot replacement for vanilla's throat-cut execution.</summary>
-        public static void ExecuteByGunshot(Pawn executioner, Pawn victim, ThingWithComps weapon)
+        public static void ExecuteByGunshot(Pawn executioner, Pawn victim, ThingWithComps weapon, DamageDef damageDef = null)
         {
             Vector3 from = executioner.DrawPos;
             Vector3 dir = victim.DrawPos - from;
@@ -163,7 +163,7 @@ namespace EndIt
             for (int i = 0; i < blood; i++) victim.health.DropBloodFilth();
 
             BodyPartRecord part = Brain(victim) ?? Part(victim, "Head");
-            DamageInfo dinfo = new DamageInfo(EndItDefOf.EndIt_ExecutionShot, MaxHp(victim, part) + 20f, 999f, dir.AngleFlat(),
+            DamageInfo dinfo = new DamageInfo(damageDef ?? EndItDefOf.EndIt_ExecutionShot, MaxHp(victim, part) + 20f, 999f, dir.AngleFlat(),
                 executioner, part, weapon.def, instigatorGuilty: true);
             dinfo.SetIgnoreInstantKillProtection(true);
             dinfo.SetAllowDamagePropagation(false);
