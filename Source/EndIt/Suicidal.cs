@@ -151,29 +151,27 @@ namespace EndIt
     }
 
     /// <summary>
-    /// Rim Job World (optional): a forced encounter gives the victim a chance of the suicidal break. Detected by
-    /// RJW's own memories: a negative-mood memory from RJW whose defName contains "Raped" (not "Rapist").
+    /// Rim Job World (optional): a forced encounter gives the victim a chance of the suicidal break.
+    /// Detected by RJW's victim memories: GotRaped, GotAnalRaped, GotAnalRapedByFemale and GotRapedUnconscious
+    /// (any negative "Got...Raped..." memory, so later variants are covered too). The Masochist... versions,
+    /// the social opinions (HateMyRapist, AllowedMeToGetRaped) and FeelingBroken are left out.
     /// </summary>
     [HarmonyPatch(typeof(MemoryThoughtHandler), nameof(MemoryThoughtHandler.TryGainMemory),
         new[] { typeof(Thought_Memory), typeof(Pawn) })]
     public static class Patch_MemoryThoughtHandler_TryGainMemory_Rjw
     {
-        private const string RjwPackageId = "rim.job.world";
         private static bool? rjwActive;
-        // One roll per encounter, even though RJW hands out several memories for it.
+        // One roll per encounter, even though RJW can hand out several memories for it.
         private static readonly Dictionary<int, int> lastRollTick = new Dictionary<int, int>();
 
-        private static bool RjwActive => rjwActive ??= ModLister.GetActiveModWithIdentifier(RjwPackageId, true) != null;
+        // RJW is loaded if its basic victim memory exists; no dependency on its package id.
+        private static bool RjwActive => rjwActive ??= DefDatabase<ThoughtDef>.GetNamedSilentFail("GotRaped") != null;
 
         public static bool IsVictimMemory(ThoughtDef def)
         {
-            if (def == null || def.modContentPack == null
-                || !def.modContentPack.PackageId.ToLowerInvariant().StartsWith(RjwPackageId))
-                return false;
+            if (def == null) return false;
             string name = def.defName;
-            if (name.IndexOf("Raped", System.StringComparison.OrdinalIgnoreCase) < 0
-                || name.IndexOf("Rapist", System.StringComparison.OrdinalIgnoreCase) >= 0)
-                return false;
+            if (!name.StartsWith("Got") || name.IndexOf("Raped", System.StringComparison.Ordinal) < 0) return false;
             return def.stages != null && def.stages.Count > 0 && def.stages[0] != null && def.stages[0].baseMoodEffect < 0f;
         }
 

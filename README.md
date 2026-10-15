@@ -100,7 +100,7 @@ A pawn who turns suicidal broods for **5 hours**, wandering aimlessly but still 
 
 It's triggered by:
 - **Brainwashing:** when the catatonia after a session lifts, a 10% chance.
-- **Rim Job World** (optional, only when RJW is loaded): after a forced encounter, a 10% chance for the victim. It's detected from RJW's own memories: a negative memory from RJW whose name contains "Raped" (but not "Rapist"), rolled at most once an hour per pawn.
+- **Rim Job World** (optional, only when RJW is loaded): after a forced encounter, a 10% chance for the victim. It's detected from RJW's victim memories (`GotRaped`, `GotAnalRaped`, `GotAnalRapedByFemale`, `GotRapedUnconscious`, and any later negative `Got...Raped...` memory), rolled at most once an hour per pawn. Masochists who enjoyed it, and the social opinion memories, don't count.
 
 Both chances can be changed in the mod settings. Prisoners and slaves can have the break too.
 
