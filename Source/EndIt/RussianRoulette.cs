@@ -18,7 +18,7 @@ namespace EndIt
         }
     }
 
-    /// <summary>Keeps the pawn on the roulette job until it ends the state (three pulls, or a live round).</summary>
+    /// <summary>Keeps the pawn on the roulette job until it ends the state (six pulls, or a live round).</summary>
     public class MentalState_RussianRoulette : MentalState
     {
         private int jobStarts;
@@ -49,12 +49,12 @@ namespace EndIt
     }
 
     /// <summary>
-    /// Three rounds: spin the cylinder, revolver to the temple, pull. Each pull is live with the chance set in
-    /// the mod settings (one in six by default). A live round is a pistol End it; surviving all three ends the break.
+    /// Six rounds: spin the cylinder, revolver to the temple, pull. Each pull is live with the chance set in
+    /// the mod settings (one in six by default). A live round is a pistol End it; surviving all six ends the break.
     /// </summary>
     public class JobDriver_RussianRoulette : JobDriver, IEndItAnimated
     {
-        public const int Rounds = 3;
+        public const int Rounds = 6;
 
         private int round;
         private int roundStartTick = -1;
