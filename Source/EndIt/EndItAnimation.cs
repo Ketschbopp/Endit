@@ -11,6 +11,20 @@ namespace EndIt
     /// z is screen-up, angles follow RimWorld's aim convention (0 = up, 90 = right, clockwise).
     /// For a downed pawn the whole frame is rotated with the lying body.
     /// </summary>
+    /// <summary>A job driver whose weapon is drawn by <see cref="EndItAnimation"/>.</summary>
+    public interface IEndItAnimated
+    {
+        bool Aiming { get; }
+        WeaponStyle Style { get; }
+        int AimTicks { get; }
+
+        /// <summary>Russian roulette: spin the cylinder before each raise.</summary>
+        bool Roulette { get; }
+
+        /// <summary>Russian roulette: this pull was an empty chamber.</summary>
+        bool DryFire { get; }
+    }
+
     public static class EndItAnimation
     {
         public struct Timeline
@@ -74,6 +88,16 @@ namespace EndIt
         // Where the weapon hangs before it's raised: low and to the right, pointing down.
         private static readonly Vector2 RestPoint = new Vector2(0.32f, -0.62f);
         private const float RestAngle = 160f;
+
+        // Russian roulette, per round: spin the cylinder, raise, hesitate, pull, lower, pause.
+        public const int RouletteSpinTicks = 60;
+        private const int RouletteLowerTicks = 45;
+        private const int RoulettePauseTicks = 60;
+        public static int RouletteFireTick => RouletteSpinTicks + PistolTimeline.Fire;
+        public static int RouletteRoundTicks => RouletteFireTick + RouletteLowerTicks + RoulettePauseTicks;
+
+        // Held flat in front of the chest, barrel to the right, while the cylinder is spun.
+        private static readonly Pose RouletteChest = new Pose(new Vector2(0.06f, -0.4f), 90f);
 
         public static Timeline TimelineFor(WeaponStyle style)
         {
@@ -229,6 +253,45 @@ namespace EndIt
             return Pose.Lerp(cut, rest, Smooth((float)after / SeppukuDropTicks));
         }
 
+        /// <summary>
+        /// One round of Russian roulette: the cylinder is spun at chest height, the revolver goes to the temple,
+        /// the pawn hesitates and pulls the trigger. A live round recoils like a pistol End it; an empty chamber
+        /// gives a startled twitch, then the revolver is lowered for the next round.
+        /// </summary>
+        private static Pose RoulettePose(int ticks, float halfLen, int seed, bool dryFire, out Vector2 tip)
+        {
+            Timeline tl = PistolTimeline;
+            Pose rest = new Pose(RestPoint, RestAngle);
+            Pose aim = AimPose(WeaponStyle.Pistol, halfLen, out tip);
+
+            if (ticks < RouletteSpinTicks)
+            {
+                float t = (float)ticks / RouletteSpinTicks;
+                Pose p = Pose.Lerp(rest, RouletteChest, Smooth(t * 3f));
+                // The flick of the cylinder: the gun jerks as it spins.
+                if (t > 0.35f && t < 0.8f) p.Angle += Mathf.Sin(ticks * 1.7f) * 7f;
+                return p;
+            }
+
+            int rel = ticks - RouletteSpinTicks;
+            if (rel < tl.Raise) return Pose.Lerp(RouletteChest, aim, Smooth((float)rel / tl.Raise));
+            if (rel < tl.Fire) return Hesitate(aim, RouletteChest, rel, tl, seed);
+            if (!dryFire) return LocalPose(WeaponStyle.Pistol, rel, halfLen, seed, out tip);
+
+            // *click*
+            int after = rel - tl.Fire;
+            const int twitch = 4;
+            const int frozen = 20;
+            if (after < twitch)
+            {
+                Pose jerk = aim;
+                jerk.Angle += 8f * Smooth((float)after / twitch);
+                return jerk;
+            }
+            if (after < frozen) return Tremble(aim, ticks, seed, 0.02f, 4f);
+            return Pose.Lerp(aim, rest, Smooth((float)(after - frozen) / (RouletteLowerTicks - frozen)));
+        }
+
         private static float Smooth(float t)
         {
             t = Mathf.Clamp01(t);
@@ -238,7 +301,7 @@ namespace EndIt
         /// <summary>
         /// Resolves the weapon's world-space centre and aim angle for this frame, plus where the muzzle/tip is.
         /// </summary>
-        public static bool TryGetWorldPose(Pawn pawn, JobDriver_EndIt driver, Vector3 drawLoc, out Vector3 center, out float angle,
+        public static bool TryGetWorldPose(Pawn pawn, IEndItAnimated driver, Vector3 drawLoc, out Vector3 center, out float angle,
             out Vector3 tipWorld)
         {
             center = tipWorld = drawLoc;
@@ -256,7 +319,10 @@ namespace EndIt
 
             Vector3 head = drawLoc + bodyRot * renderer.BaseHeadOffsetAt(facing);
 
-            Pose local = LocalPose(driver.Style, driver.AimTicks, HalfLength(weapon), pawn.thingIDNumber % 97, out Vector2 tip);
+            int seed = pawn.thingIDNumber % 97;
+            Pose local = driver.Roulette
+                ? RoulettePose(driver.AimTicks, HalfLength(weapon), seed, driver.DryFire, out Vector2 tip)
+                : LocalPose(driver.Style, driver.AimTicks, HalfLength(weapon), seed, out tip);
             // Facing west the pawn is mirrored, so mirror the pose to keep the weapon in front of the body.
             if (facing == Rot4.West)
             {
@@ -275,7 +341,7 @@ namespace EndIt
         }
 
         /// <summary>Called from the pawn renderer's draw phase.</summary>
-        public static void Draw(Pawn pawn, JobDriver_EndIt driver, Vector3 drawLoc)
+        public static void Draw(Pawn pawn, IEndItAnimated driver, Vector3 drawLoc)
         {
             if (!TryGetWorldPose(pawn, driver, drawLoc, out Vector3 center, out float angle, out _)) return;
             PawnRenderUtility.DrawEquipmentAiming(pawn.equipment.Primary, center, GenMath.PositiveMod(angle, 360f));

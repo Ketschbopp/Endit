@@ -76,7 +76,7 @@ namespace EndIt
     {
         public static void Postfix(DrawPhase phase, Vector3 drawLoc, Pawn ___pawn)
         {
-            if (phase != DrawPhase.Draw || ___pawn?.jobs?.curDriver is not JobDriver_EndIt driver || !driver.Aiming) return;
+            if (phase != DrawPhase.Draw || ___pawn?.jobs?.curDriver is not IEndItAnimated driver || !driver.Aiming) return;
             EndItAnimation.Draw(___pawn, driver, drawLoc);
         }
     }
@@ -87,7 +87,7 @@ namespace EndIt
     {
         public static bool Prefix(Pawn pawn, ref bool __result)
         {
-            if (pawn?.jobs?.curDriver is JobDriver_EndIt driver && driver.Aiming)
+            if (pawn?.jobs?.curDriver is IEndItAnimated driver && driver.Aiming)
             {
                 __result = false;
                 return false;
