@@ -10,7 +10,7 @@ namespace EndIt
     /// Grab the weapon (if it isn't already in hand), raise it to the head (or throat), hesitate, and do it.
     /// Works for pawns on their feet and for downed pawns, which skip the walk.
     /// </summary>
-    public class JobDriver_EndIt : JobDriver
+    public class JobDriver_EndIt : JobDriver, IEndItAnimated
     {
         private int aimStartTick = -1;
         private bool fired;
@@ -22,6 +22,8 @@ namespace EndIt
         public bool Aiming => aimStartTick >= 0 && !ended && style != WeaponStyle.None;
         public WeaponStyle Style => style;
         public int AimTicks => Find.TickManager.TicksGame - aimStartTick;
+        public bool Roulette => false;
+        public bool DryFire => false;
 
         public override void ExposeData()
         {

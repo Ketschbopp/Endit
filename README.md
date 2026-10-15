@@ -25,6 +25,22 @@ A standalone mod (separate from Rocket's Airstrike in the repo root). To install
 ### Gun executions
 When the executioner has a gun equipped, prisoner, slave and guilty-colonist executions become a gunshot to the head instead of a throat cut. The executioner aims at the victim first; the aim time is set in the mod settings. Thoughts, records and tales are the same as vanilla. Executions without a gun stay vanilla.
 
+### Right-click executions
+Select a colonist and right-click a **prisoner** or a **downed enemy** to get *Execute (name) with (gun)*. The colonist walks up, aims for the execution aim time, and shoots them in the head.
+- Needs a gun equipped (the same guns that count for End it). Without one, or if the colonist is incapable of violence or can't reach the target, the option is greyed out with the reason.
+- Prisoners: same thoughts, tale and history event as a vanilla prisoner execution.
+- Downed enemies: just a kill, with no execution thoughts.
+- Works regardless of the "Executioners with a gun shoot the prisoner" setting.
+
+### Russian roulette (mental break)
+An extreme mental break that can only happen to a pawn carrying a **revolver**, either equipped or in their inventory. Any gun with "revolver" in its name counts.
+- The pawn equips the revolver if it's in their inventory, and puts whatever they were holding into their inventory.
+- **Three rounds.** Each round they spin the cylinder at chest height, raise the revolver to their temple, hesitate with trembling hands, and pull the trigger.
+- **Each pull is random**, with a 1 in 6 chance of a live round by default (adjustable in the mod settings).
+  - **Empty chamber:** a *click*, a startled twitch, and the revolver comes down for the next round.
+  - **Live round:** the same as a pistol End it, so whether it kills follows the pistol death chance. If they survive the shot, the break ends.
+- After three empty chambers the break ends with a "pulled the trigger 3 times and lived" message.
+
 ## Building
 ```
 cd Source/EndIt

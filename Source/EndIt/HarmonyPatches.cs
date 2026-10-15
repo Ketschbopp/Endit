@@ -61,7 +61,12 @@ namespace EndIt
         {
             if (__state != null || __result == null) return;
             Pawn pawn = EndItUtility.SelfClickedPawn(selectedPawns, clickPos);
-            if (pawn != null) __result.Add(EndItUtility.MakeFloatMenuOption(pawn));
+            if (pawn != null)
+            {
+                __result.Add(EndItUtility.MakeFloatMenuOption(pawn));
+                return;
+            }
+            GunExecutionOrder.AddOptions(selectedPawns, clickPos, __result);
         }
     }
 
@@ -71,7 +76,7 @@ namespace EndIt
     {
         public static void Postfix(DrawPhase phase, Vector3 drawLoc, Pawn ___pawn)
         {
-            if (phase != DrawPhase.Draw || ___pawn?.jobs?.curDriver is not JobDriver_EndIt driver || !driver.Aiming) return;
+            if (phase != DrawPhase.Draw || ___pawn?.jobs?.curDriver is not IEndItAnimated driver || !driver.Aiming) return;
             EndItAnimation.Draw(___pawn, driver, drawLoc);
         }
     }
@@ -82,7 +87,7 @@ namespace EndIt
     {
         public static bool Prefix(Pawn pawn, ref bool __result)
         {
-            if (pawn?.jobs?.curDriver is JobDriver_EndIt driver && driver.Aiming)
+            if (pawn?.jobs?.curDriver is IEndItAnimated driver && driver.Aiming)
             {
                 __result = false;
                 return false;
@@ -99,13 +104,52 @@ namespace EndIt
                                    || def == JobDefOf.SlaveExecution);
         }
 
-        /// <summary>The executioner's gun, if this execution should be a shooting.</summary>
+        /// <summary>The executioner's gun, if this vanilla execution should be a shooting.</summary>
         public static ThingWithComps GunFor(Pawn executioner)
         {
-            if (!EndItMod.Settings.gunExecutions || executioner == null) return null;
-            ThingWithComps primary = executioner.equipment?.Primary;
+            return EndItMod.Settings.gunExecutions ? HeldGun(executioner) : null;
+        }
+
+        /// <summary>The gun the pawn has equipped, if any.</summary>
+        public static ThingWithComps HeldGun(Pawn pawn)
+        {
+            ThingWithComps primary = pawn?.equipment?.Primary;
             WeaponStyle style = WeaponUtil.Classify(primary);
             return style == WeaponStyle.Pistol || style == WeaponStyle.Rifle ? primary : null;
+        }
+
+        /// <summary>
+        /// Aims the gun at the job's target A for the configured time before the shot.
+        /// Skipped (instantly) when <paramref name="gunFor"/> finds no gun.
+        /// </summary>
+        public static Toil MakeAimToil(JobDriver driver, System.Func<Pawn, ThingWithComps> gunFor)
+        {
+            Toil aim = ToilMaker.MakeToil("EndIt_ExecutionAim");
+            int endTick = -1;
+            aim.initAction = () =>
+            {
+                Pawn executioner = aim.actor;
+                Pawn victim = driver.job.targetA.Thing as Pawn;
+                int ticks = EndItMod.Settings.executionAimTicks;
+                if (victim == null || ticks <= 0 || gunFor(executioner) == null)
+                {
+                    driver.ReadyForNextToil();
+                    return;
+                }
+                endTick = Find.TickManager.TicksGame + ticks;
+                executioner.rotationTracker.FaceTarget(victim);
+                // A busy stance with a focus target makes vanilla draw the gun aimed at the victim.
+                // Cooldown (not warmup) so the verb never actually fires.
+                executioner.stances.SetStance(new Stance_Cooldown(ticks + 2, victim, executioner.equipment.PrimaryEq?.PrimaryVerb));
+            };
+            aim.tickAction = () =>
+            {
+                if (driver.job.targetA.Thing is Pawn victim) aim.actor.rotationTracker.FaceTarget(victim);
+                if (Find.TickManager.TicksGame >= endTick) driver.ReadyForNextToil();
+            };
+            aim.handlingFacing = true;
+            aim.defaultCompleteMode = ToilCompleteMode.Never;
+            return aim;
         }
     }
 
@@ -126,38 +170,8 @@ namespace EndIt
         public static IEnumerable<Toil> Postfix(IEnumerable<Toil> __result, JobDriver __instance)
         {
             List<Toil> toils = __result.ToList();
-            if (toils.Count > 0) toils.Insert(toils.Count - 1, MakeAimToil(__instance));
+            if (toils.Count > 0) toils.Insert(toils.Count - 1, GunExecution.MakeAimToil(__instance, GunExecution.GunFor));
             return toils;
-        }
-
-        private static Toil MakeAimToil(JobDriver driver)
-        {
-            Toil aim = ToilMaker.MakeToil("EndIt_ExecutionAim");
-            int endTick = -1;
-            aim.initAction = () =>
-            {
-                Pawn executioner = aim.actor;
-                Pawn victim = driver.job.targetA.Thing as Pawn;
-                int ticks = EndItMod.Settings.executionAimTicks;
-                if (victim == null || ticks <= 0 || GunExecution.GunFor(executioner) == null)
-                {
-                    driver.ReadyForNextToil();
-                    return;
-                }
-                endTick = Find.TickManager.TicksGame + ticks;
-                executioner.rotationTracker.FaceTarget(victim);
-                // A busy stance with a focus target makes vanilla draw the gun aimed at the victim.
-                // Cooldown (not warmup) so the verb never actually fires.
-                executioner.stances.SetStance(new Stance_Cooldown(ticks + 2, victim, executioner.equipment.PrimaryEq?.PrimaryVerb));
-            };
-            aim.tickAction = () =>
-            {
-                if (driver.job.targetA.Thing is Pawn victim) aim.actor.rotationTracker.FaceTarget(victim);
-                if (Find.TickManager.TicksGame >= endTick) driver.ReadyForNextToil();
-            };
-            aim.handlingFacing = true;
-            aim.defaultCompleteMode = ToilCompleteMode.Never;
-            return aim;
         }
     }
 

@@ -79,6 +79,23 @@ namespace EndIt
             return SwordWords.Any(name.Contains);
         }
 
+        public static bool IsRevolver(Thing thing)
+        {
+            if (thing == null) return false;
+            WeaponStyle style = Classify(thing);
+            return (style == WeaponStyle.Pistol || style == WeaponStyle.Rifle)
+                   && (thing.def.defName + " " + thing.def.label).ToLowerInvariant().Contains("revolver");
+        }
+
+        /// <summary>The revolver the pawn holds, or else the first one in their inventory.</summary>
+        public static ThingWithComps FindRevolver(Pawn pawn)
+        {
+            ThingWithComps primary = pawn.equipment?.Primary;
+            if (IsRevolver(primary) && EquipmentUtility.CanEquip(primary, pawn)) return primary;
+            return pawn.inventory?.innerContainer.FirstOrDefault(t => IsRevolver(t) && t is ThingWithComps
+                && EquipmentUtility.CanEquip(t, pawn)) as ThingWithComps;
+        }
+
         public static VerbProperties PrimaryVerb(ThingDef def)
         {
             List<VerbProperties> verbs = def?.Verbs;
