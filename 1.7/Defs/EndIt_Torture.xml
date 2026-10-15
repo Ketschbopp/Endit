@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ResearchProjectDef>
+    <defName>EndIt_BadChairResearch</defName>
+    <label>interrogation chair</label>
+    <description>Build the Bad Chair: a heavy wooden chair with wrist, ankle and neck straps, for interrogating and torturing prisoners.</description>
+    <baseCost>500</baseCost>
+    <techLevel>Medieval</techLevel>
+    <researchViewX>1.00</researchViewX>
+    <researchViewY>14.00</researchViewY>
+  </ResearchProjectDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>EndIt_BadChair</defName>
+    <label>Bad Chair</label>
+    <description>A heavy wooden chair with leather straps for the wrists, ankles and neck. Select it and press "Torture..." to choose a prisoner, a torturer, a method, a reason and how long. The torturer carries the prisoner here, straps them in and works on them from the front of the chair.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/EndIt_BadChair</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1.3,1.3)</drawSize>
+      <damageData>
+        <rect>(0.15,0.15,0.7,0.7)</rect>
+      </damageData>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <fillPercent>0.4</fillPercent>
+    <rotatable>true</rotatable>
+    <defaultPlacingRot>South</defaultPlacingRot>
+    <size>(1,1)</size>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <castEdgeShadows>false</castEdgeShadows>
+    <staticSunShadowHeight>0.2</staticSunShadowHeight>
+    <statBases>
+      <MaxHitPoints>200</MaxHitPoints>
+      <WorkToBuild>3000</WorkToBuild>
+      <Flammability>1.0</Flammability>
+      <Beauty>-20</Beauty>
+      <Mass>25</Mass>
+    </statBases>
+    <costList>
+      <WoodLog>50</WoodLog>
+      <Steel>25</Steel>
+    </costList>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <constructionSkillPrerequisite>4</constructionSkillPrerequisite>
+    <designationCategory>Security</designationCategory>
+    <researchPrerequisites>
+      <li>EndIt_BadChairResearch</li>
+    </researchPrerequisites>
+    <canOverlapZones>false</canOverlapZones>
+    <tickerType>Never</tickerType>
+    <comps>
+      <li Class="EndIt.CompProperties_TortureChair"/>
+    </comps>
+  </ThingDef>
+
+  <JobDef>
+    <defName>EndIt_Torture</defName>
+    <driverClass>EndIt.JobDriver_Torture</driverClass>
+    <reportString>torturing TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+
+  <JobDef>
+    <defName>EndIt_BeingTortured</defName>
+    <driverClass>EndIt.JobDriver_BeingTortured</driverClass>
+    <reportString>strapped to the Bad Chair.</reportString>
+    <playerInterruptible>false</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+    <alwaysShowReport>true</alwaysShowReport>
+  </JobDef>
+
+  <!-- ===== During ===== -->
+
+  <HediffDef>
+    <defName>EndIt_UnderTorture</defName>
+    <label>being tortured</label>
+    <description>Strapped down and being tortured. Terror and anticipation make every injury hurt more. Ends when the session does.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.85, 0.25, 0.25)</defaultLabelColor>
+    <isBad>true</isBad>
+    <stages>
+      <li>
+        <painOffset>0.2</painOffset>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>EndIt_NearDrowning</defName>
+    <label>near drowning</label>
+    <description>Water forced into the airways. Breathing is badly impaired and consciousness slips. Clears on its own over a few hours once the water stops; deep enough, it kills.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.5, 0.7, 0.9)</defaultLabelColor>
+    <isBad>true</isBad>
+    <maxSeverity>1</maxSeverity>
+    <lethalSeverity>1</lethalSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-12</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>coughing</label>
+        <painOffset>0.05</painOffset>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.1</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.25</minSeverity>
+        <label>choking</label>
+        <painOffset>0.15</painOffset>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.35</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.1</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.5</minSeverity>
+        <label>drowning</label>
+        <painOffset>0.25</painOffset>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.6</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.3</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.75</minSeverity>
+        <label>suffocating</label>
+        <lifeThreatening>true</lifeThreatening>
+        <painOffset>0.3</painOffset>
+        <capMods>
+          <li><capacity>Breathing</capacity><offset>-0.85</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.55</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>EndIt_ElectricShock</defName>
+    <label>electric shock</label>
+    <description>Repeated electric shocks: burning pain, muscle spasms and a shaky heart. Wears off over about a day; enough of it stops the heart.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.9, 0.85, 0.35)</defaultLabelColor>
+    <isBad>true</isBad>
+    <maxSeverity>1</maxSeverity>
+    <lethalSeverity>1</lethalSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-2.5</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>tingling</label>
+        <painOffset>0.05</painOffset>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>muscle spasms</label>
+        <painOffset>0.15</painOffset>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.25</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.15</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.6</minSeverity>
+        <label>severe</label>
+        <painOffset>0.3</painOffset>
+        <capMods>
+          <li><capacity>Manipulation</capacity><offset>-0.4</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.3</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.15</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.85</minSeverity>
+        <label>heart arrhythmia</label>
+        <lifeThreatening>true</lifeThreatening>
+        <painOffset>0.35</painOffset>
+        <capMods>
+          <li><capacity>BloodPumping</capacity><offset>-0.4</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.3</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.4</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ===== After ===== -->
+
+  <HediffDef>
+    <defName>EndIt_TortureTrauma</defName>
+    <label>torture trauma</label>
+    <description>The lingering aftermath of torture: flinching at sudden movements, nightmares, phantom pain. Fades over about three weeks.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.75, 0.55, 0.75)</defaultLabelColor>
+    <isBad>true</isBad>
+    <maxSeverity>1</maxSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-0.05</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>fading</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.02</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.4</minSeverity>
+        <label>haunted</label>
+        <painOffset>0.03</painOffset>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.75</minSeverity>
+        <label>shattered</label>
+        <painOffset>0.05</painOffset>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.08</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.1</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>EndIt_Interrogated</defName>
+    <label>interrogated</label>
+    <description>Has already given up what they know. Torturing them again for intel won't get anything new.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.6, 0.6, 0.6)</defaultLabelColor>
+    <isBad>false</isBad>
+  </HediffDef>
+
+  <!-- ===== Thoughts ===== -->
+
+  <ThoughtDef>
+    <defName>EndIt_WasTortured</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>20</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.75</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>I was tortured</label>
+        <description>They strapped me to a chair and hurt me for hours. I can't stop shaking.</description>
+        <baseMoodEffect>-25</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>EndIt_TorturedSomeone</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>8</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.75</stackedEffectMultiplier>
+    <nullifyingTraits>
+      <li>Psychopath</li>
+      <li>Bloodlust</li>
+    </nullifyingTraits>
+    <stages>
+      <li>
+        <label>tortured a prisoner</label>
+        <description>I did terrible things to someone who couldn't fight back. Their screams won't leave me.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>EndIt_TorturedEnjoyed</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>6</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.75</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>made someone scream</label>
+        <description>Strapped down and at my mercy. I liked that.</description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>EndIt_TorturedForFunEnjoyed</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>6</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.75</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>tortured for fun</label>
+        <description>No questions, no point. Just me and them, for hours. Wonderful.</description>
+        <baseMoodEffect>10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>EndIt_PrisonerTortured</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>6</durationDays>
+    <stackLimit>3</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <nullifyingTraits>
+      <li>Psychopath</li>
+      <li>Bloodlust</li>
+    </nullifyingTraits>
+    <stages>
+      <li>
+        <label>prisoner tortured</label>
+        <description>We tortured a prisoner. I heard it. What kind of place is this?</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>

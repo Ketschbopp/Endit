@@ -35,4 +35,59 @@
   <EndIt_Settings_Confirm>Ask for confirmation</EndIt_Settings_Confirm>
   <EndIt_Settings_GunExecutions>Executioners with a gun shoot the prisoner instead of cutting</EndIt_Settings_GunExecutions>
   <EndIt_Settings_ExecutionAim>Execution aim time: {0} s</EndIt_Settings_ExecutionAim>
+
+  <EndIt_Torture_Gizmo>Torture...</EndIt_Torture_Gizmo>
+  <EndIt_Torture_GizmoDesc>Choose a prisoner, a torturer, a method, a reason and how long. The torturer carries the prisoner here, straps them in and gets to work.</EndIt_Torture_GizmoDesc>
+  <EndIt_Torture_Stop>Stop torture</EndIt_Torture_Stop>
+  <EndIt_Torture_StopDesc>End the session now. What has been done to {0} so far still counts.</EndIt_Torture_StopDesc>
+  <EndIt_Torture_InspectPending>{0} is bringing {1} for {2}.</EndIt_Torture_InspectPending>
+  <EndIt_Torture_Inspect>{0} is torturing {1} ({2}), {3} h left.</EndIt_Torture_Inspect>
+  <EndIt_Torture_Title>Torture</EndIt_Torture_Title>
+  <EndIt_Torture_Prisoner>Prisoner</EndIt_Torture_Prisoner>
+  <EndIt_Torture_Torturer>Torturer</EndIt_Torture_Torturer>
+  <EndIt_Torture_Resistance>resistance {0}</EndIt_Torture_Resistance>
+  <EndIt_Torture_Method>Method</EndIt_Torture_Method>
+  <EndIt_Torture_Reason>Reason</EndIt_Torture_Reason>
+  <EndIt_Torture_Hours>Duration: {0} h</EndIt_Torture_Hours>
+  <EndIt_Torture_StopBeforeDeath>Stop before it kills them</EndIt_Torture_StopBeforeDeath>
+  <EndIt_Torture_StopBeforeDeathDesc>The torturer holds back near the limits and stops the session if the prisoner gets close to death: heavy blood loss, near drowning, a failing heart, deep hypothermia or very poor health. Without this, the prisoner may die.</EndIt_Torture_StopBeforeDeathDesc>
+  <EndIt_Torture_Begin>Begin</EndIt_Torture_Begin>
+  <EndIt_Torture_None>(none)</EndIt_Torture_None>
+  <EndIt_Torture_PickPrisoner>Pick a prisoner.</EndIt_Torture_PickPrisoner>
+  <EndIt_Torture_PickTorturer>Pick a torturer who can do violence and use their hands.</EndIt_Torture_PickTorturer>
+  <EndIt_Torture_NoPath>{0} can't reach the prisoner or the chair.</EndIt_Torture_NoPath>
+  <EndIt_Torture_Reserved>Someone else is busy with the prisoner or the chair.</EndIt_Torture_Reserved>
+  <EndIt_Torture_CouldNotStart>{0} couldn't start.</EndIt_Torture_CouldNotStart>
+  <EndIt_Torture_StoppedDanger>{0} stopped: {1} is close to death.</EndIt_Torture_StoppedDanger>
+  <EndIt_Torture_Died>{0} died under torture.</EndIt_Torture_Died>
+  <EndIt_Torture_Done>{0} is done with {1}.</EndIt_Torture_Done>
+  <EndIt_Torture_AlreadyTalked>{0} has already told you everything they know.</EndIt_Torture_AlreadyTalked>
+  <EndIt_Torture_NoIntel>{0} didn't break. Nothing useful came out of it (chance was {1}).</EndIt_Torture_NoIntel>
+  <EndIt_Torture_IntelNothing>{0} broke, but had nothing you could act on right now.</EndIt_Torture_IntelNothing>
+  <EndIt_Torture_IntelSource>Intel from {0}, extracted under torture.</EndIt_Torture_IntelSource>
+
+  <EndIt_TortureMethod_Beating>Beating</EndIt_TortureMethod_Beating>
+  <EndIt_TortureMethod_Beating_Desc>Punches to the body and face. Bruises, and now and then a cracked rib. Least effective for intel.</EndIt_TortureMethod_Beating_Desc>
+  <EndIt_TortureMethod_Waterboarding>Waterboarding</EndIt_TortureMethod_Waterboarding>
+  <EndIt_TortureMethod_Waterboarding_Desc>A cloth over the face and water poured over it in bursts. Causes near drowning without leaving wounds. Most effective for intel.</EndIt_TortureMethod_Waterboarding_Desc>
+  <EndIt_TortureMethod_Branding>Branding</EndIt_TortureMethod_Branding>
+  <EndIt_TortureMethod_Branding_Desc>A red-hot iron pressed to the arms, legs and chest. Burns that can scar.</EndIt_TortureMethod_Branding_Desc>
+  <EndIt_TortureMethod_ElectricShock>Electric shock</EndIt_TortureMethod_ElectricShock>
+  <EndIt_TortureMethod_ElectricShock_Desc>Shocks from an electric prod: pain, spasms and a struggling heart, wearing off over about a day. Small burns where it touches.</EndIt_TortureMethod_ElectricShock_Desc>
+  <EndIt_TortureMethod_Thumbscrews>Thumbscrews</EndIt_TortureMethod_Thumbscrews>
+  <EndIt_TortureMethod_Thumbscrews_Desc>Fingers crushed in an iron vice. Badly crushed fingers can be lost for good.</EndIt_TortureMethod_Thumbscrews_Desc>
+  <EndIt_TortureMethod_Cutting>Cutting</EndIt_TortureMethod_Cutting>
+  <EndIt_TortureMethod_Cutting_Desc>Shallow knife cuts on the arms, legs and chest. They bleed, and can scar.</EndIt_TortureMethod_Cutting_Desc>
+  <EndIt_TortureMethod_FootWhipping>Foot whipping</EndIt_TortureMethod_FootWhipping>
+  <EndIt_TortureMethod_FootWhipping_Desc>A cane across the soles of the feet. Very painful, little lasting damage beyond bruised feet.</EndIt_TortureMethod_FootWhipping_Desc>
+  <EndIt_TortureMethod_IceWater>Ice water</EndIt_TortureMethod_IceWater>
+  <EndIt_TortureMethod_IceWater_Desc>Bucket after bucket of freezing water. Causes hypothermia, which fades once they're warm again.</EndIt_TortureMethod_IceWater_Desc>
+  <EndIt_TortureMethod_NeedsResearch>needs {0}</EndIt_TortureMethod_NeedsResearch>
+
+  <EndIt_TortureReason_Intel>Get intel</EndIt_TortureReason_Intel>
+  <EndIt_TortureReason_Intel_Desc>At the end, a chance they break and talk, based on the torturer's Social skill, how long it went on and the method. If they do, you get a real opportunity on the world map, such as an enemy camp or a hidden item stash. Each prisoner only talks once.</EndIt_TortureReason_Intel_Desc>
+  <EndIt_TortureReason_BreakWill>Break their will</EndIt_TortureReason_BreakWill>
+  <EndIt_TortureReason_BreakWill_Desc>Grinds down their resistance and will twice as fast, making them much easier to recruit or enslave.</EndIt_TortureReason_BreakWill_Desc>
+  <EndIt_TortureReason_Fun>For fun</EndIt_TortureReason_Fun>
+  <EndIt_TortureReason_Fun_Desc>No questions asked. Bloodlust pawns love it and get recreation from it; everyone else just feels worse.</EndIt_TortureReason_Fun_Desc>
 </LanguageData>
