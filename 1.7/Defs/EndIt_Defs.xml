@@ -129,7 +129,7 @@
     <recoverFromCollapsingExhausted>true</recoverFromCollapsingExhausted>
     <nameColor>(0.85, 0.3, 0.3)</nameColor>
     <beginLetterLabel>Russian roulette</beginLetterLabel>
-    <beginLetter>{0} has given up and is going to play Russian roulette with a revolver.\n\nOne bullet, six chambers, three pulls of the trigger.</beginLetter>
+    <beginLetter>{0} has given up and is going to play Russian roulette with a revolver.\n\nOne bullet, six chambers, one spin, three pulls of the trigger.</beginLetter>
     <beginLetterDef>ThreatSmall</beginLetterDef>
     <recoveryMessage>{0} has put the revolver down.</recoveryMessage>
     <baseInspectLine>Mental state: Russian roulette</baseInspectLine>

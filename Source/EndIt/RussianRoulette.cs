@@ -49,14 +49,20 @@ namespace EndIt
     }
 
     /// <summary>
-    /// Three rounds: spin the cylinder, revolver to the temple, pull. Each pull is live with the chance set in
-    /// the mod settings (one in six by default). A live round is a pistol End it; surviving all three ends the break.
+    /// One bullet in six chambers, the cylinder spun once, then three pulls in a row: 1 in 6 on the first pull,
+    /// 1 in 5 on the second, 1 in 4 on the third (50% overall). A live round is a pistol End it; surviving all
+    /// three ends the break.
     /// </summary>
     public class JobDriver_RussianRoulette : JobDriver, IEndItAnimated
     {
         public const int Rounds = 3;
+        public const int Chambers = 6;
 
         private int round;
+        // Which pull (0-based) lands on the bullet, -1 if it's in a chamber that's never reached; NotRolled until
+        // the cylinder is spun.
+        private int liveRound = NotRolled;
+        private const int NotRolled = -2;
         private int roundStartTick = -1;
         private bool fired;
         private bool dryFire;
@@ -73,6 +79,7 @@ namespace EndIt
         {
             base.ExposeData();
             Scribe_Values.Look(ref round, "round");
+            Scribe_Values.Look(ref liveRound, "liveRound", NotRolled);
             Scribe_Values.Look(ref roundStartTick, "roundStartTick", -1);
             Scribe_Values.Look(ref fired, "fired");
             Scribe_Values.Look(ref dryFire, "dryFire");
@@ -101,6 +108,11 @@ namespace EndIt
             play.initAction = () =>
             {
                 pawn.pather?.StopDead();
+                if (liveRound == NotRolled)
+                {
+                    int bullet = Rand.Range(0, Chambers);
+                    liveRound = bullet < Rounds ? bullet : -1;
+                }
                 if (roundStartTick < 0) StartRound();
             };
             play.tickAction = RouletteTick;
@@ -112,7 +124,8 @@ namespace EndIt
 
         private void StartRound()
         {
-            roundStartTick = Find.TickManager.TicksGame;
+            // The cylinder is only spun before the first pull; later rounds start straight at the raise.
+            roundStartTick = Find.TickManager.TicksGame - (round > 0 ? EndItAnimation.RouletteSpinTicks : 0);
             fired = false;
             dryFire = false;
         }
@@ -125,7 +138,7 @@ namespace EndIt
             if (!fired && ticks >= EndItAnimation.RouletteFireTick)
             {
                 fired = true;
-                if (Rand.Chance(EndItMod.Settings.rouletteLiveChance))
+                if (round == liveRound)
                 {
                     Vector3 muzzle = EndItAnimation.TryGetWorldPose(pawn, this, pawn.DrawPos, out _, out _, out Vector3 tip)
                         ? tip
