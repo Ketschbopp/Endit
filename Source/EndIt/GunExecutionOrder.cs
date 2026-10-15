@@ -8,7 +8,7 @@ namespace EndIt
 {
     /// <summary>
     /// Right-clicking a prisoner or a downed enemy with a gun-carrying colonist selected offers to shoot them;
-    /// right-clicking a downed, unconscious friendly pawn offers a mercy kill.
+    /// right-clicking a downed friendly pawn offers a mercy kill.
     /// </summary>
     public static class GunExecutionOrder
     {
@@ -20,10 +20,10 @@ namespace EndIt
                        || IsMercyTarget(victim));
         }
 
-        /// <summary>A friendly (non-hostile, non-prisoner) pawn that is down and unconscious.</summary>
+        /// <summary>A friendly (non-hostile, non-prisoner) pawn that is down, conscious or not.</summary>
         public static bool IsMercyTarget(Pawn victim)
         {
-            return victim != null && victim.Downed && !victim.Awake() && !victim.IsPrisonerOfColony
+            return victim != null && victim.Downed && !victim.IsPrisonerOfColony
                    && !victim.HostileTo(Faction.OfPlayer);
         }
 
