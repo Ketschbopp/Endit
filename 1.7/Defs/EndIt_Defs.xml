@@ -43,6 +43,18 @@
     <overkillPctToDestroyPart>0~0.7</overkillPctToDestroyPart>
   </DamageDef>
 
+  <!-- Seppuku. Deep abdominal cuts that bleed out rather than kill outright. -->
+  <DamageDef>
+    <defName>EndIt_Seppuku</defName>
+    <label>seppuku</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <deathMessage>{0} died by seppuku.</deathMessage>
+    <hediff>Cut</hediff>
+    <impactSoundType>Slice</impactSoundType>
+    <armorCategory>Sharp</armorCategory>
+  </DamageDef>
+
   <!-- Gunshot execution. Flagged as an execution like vanilla's ExecutionCut. -->
   <DamageDef>
     <defName>EndIt_ExecutionShot</defName>
