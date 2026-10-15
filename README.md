@@ -41,6 +41,14 @@ An extreme mental break that can only happen to a pawn carrying a **revolver**, 
   - **Live round:** the same as a pistol End it, so whether it kills follows the pistol death chance. If they survive the shot, the break ends.
 - After three empty chambers the break ends with a "pulled the trigger 3 times and lived" message.
 
+### Gallows (hanging)
+- **Research:** *Gallows* (medieval, 300 points).
+- **Build:** *Gallows* in the **Security** tab: 60 wood and 15 cloth, construction skill 3. It takes one cell; the frame and noose stand tall above it. Pawns can walk through it.
+- **Use:** in a prisoner's **Prisoner** tab, set the interaction mode to **Hang**. A warden who's allowed to do violence carries the prisoner to the nearest free gallows, stands them on the trapdoor, puts the noose on, then drops them.
+- **Hanging:** the prisoner kicks and struggles, goes limp and sways, and dies of strangulation about 8 seconds later at normal speed.
+- **Consequences:** same mood effects, history event and tale as a vanilla execution, and no death letter.
+- If there's no free gallows, the warden won't start, and the job shows "No free gallows". Changing the prisoner's mode before they're on the gallows calls it off.
+
 ## Building
 ```
 cd Source/EndIt

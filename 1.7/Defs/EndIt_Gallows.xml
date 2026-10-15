@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <ResearchProjectDef>
+    <defName>EndIt_GallowsResearch</defName>
+    <label>gallows</label>
+    <description>Build gallows: a wooden frame, a rope and a trapdoor, for hanging condemned prisoners.</description>
+    <baseCost>300</baseCost>
+    <techLevel>Medieval</techLevel>
+    <researchViewX>1.00</researchViewX>
+    <researchViewY>13.00</researchViewY>
+  </ResearchProjectDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>EndIt_Gallows</defName>
+    <label>gallows</label>
+    <description>A wooden frame with a rope, a noose and a trapdoor. Set a prisoner's interaction mode to "hang" and a warden will carry them here, put the noose on and drop them. They suffocate within seconds.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/EndIt_Gallows</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(2,3)</drawSize>
+      <drawOffset>(0,0,1)</drawOffset>
+      <damageData>
+        <rect>(0.1,0.1,0.8,0.8)</rect>
+      </damageData>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <fillPercent>0.25</fillPercent>
+    <rotatable>false</rotatable>
+    <size>(1,1)</size>
+    <castEdgeShadows>false</castEdgeShadows>
+    <staticSunShadowHeight>0.3</staticSunShadowHeight>
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <WorkToBuild>2400</WorkToBuild>
+      <Flammability>1.0</Flammability>
+      <Beauty>-15</Beauty>
+      <Mass>35</Mass>
+    </statBases>
+    <costList>
+      <WoodLog>60</WoodLog>
+      <Cloth>15</Cloth>
+    </costList>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <constructionSkillPrerequisite>3</constructionSkillPrerequisite>
+    <designationCategory>Security</designationCategory>
+    <researchPrerequisites>
+      <li>EndIt_GallowsResearch</li>
+    </researchPrerequisites>
+    <canOverlapZones>false</canOverlapZones>
+    <tickerType>Never</tickerType>
+  </ThingDef>
+
+  <PrisonerInteractionModeDef>
+    <defName>EndIt_Hang</defName>
+    <label>hang</label>
+    <description>A warden will carry this prisoner to a gallows and hang them. Needs a gallows.</description>
+    <listOrder>61</listOrder>
+    <allowOnWildMan>true</allowOnWildMan>
+    <allowInClassicIdeoMode>true</allowInClassicIdeoMode>
+  </PrisonerInteractionModeDef>
+
+  <WorkGiverDef>
+    <defName>EndIt_HangPrisoner</defName>
+    <label>hang prisoners</label>
+    <giverClass>EndIt.WorkGiver_Warden_Hang</giverClass>
+    <workType>Warden</workType>
+    <verb>hang</verb>
+    <gerund>hanging</gerund>
+    <priorityInType>100</priorityInType>
+    <workTags>
+      <li>Violent</li>
+    </workTags>
+    <requiredCapacities>
+      <li>Manipulation</li>
+    </requiredCapacities>
+  </WorkGiverDef>
+
+  <JobDef>
+    <defName>EndIt_HangPrisoner</defName>
+    <driverClass>EndIt.JobDriver_HangPrisoner</driverClass>
+    <reportString>hanging TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+
+  <JobDef>
+    <defName>EndIt_Hanged</defName>
+    <driverClass>EndIt.JobDriver_Hanged</driverClass>
+    <reportString>being hanged.</reportString>
+    <playerInterruptible>false</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+    <alwaysShowReport>true</alwaysShowReport>
+  </JobDef>
+
+  <HediffDef>
+    <defName>EndIt_Hanging</defName>
+    <label>hanging</label>
+    <description>Hanging by the neck from a noose. The rope cuts off air and blood to the brain; death follows within seconds.</description>
+    <hediffClass>EndIt.Hediff_Hanging</hediffClass>
+    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <isBad>true</isBad>
+    <initialSeverity>0.01</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <stages>
+      <li>
+        <label>struggling</label>
+      </li>
+      <li>
+        <minSeverity>0.65</minSeverity>
+        <label>unconscious</label>
+      </li>
+    </stages>
+  </HediffDef>
+
+</Defs>

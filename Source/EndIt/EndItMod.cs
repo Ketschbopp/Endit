@@ -87,6 +87,11 @@ namespace EndIt
         public static JobDef EndIt_GunExecution;
         public static JobDef EndIt_RussianRoulette;
         public static MentalStateDef EndIt_RussianRouletteState;
+        public static ThingDef EndIt_Gallows;
+        public static PrisonerInteractionModeDef EndIt_Hang;
+        public static JobDef EndIt_HangPrisoner;
+        public static JobDef EndIt_Hanged;
+        public static HediffDef EndIt_Hanging;
 
         static EndItDefOf()
         {
