@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ===== Suicidal break ===== -->
+
+  <MentalStateDef>
+    <defName>EndIt_SuicidalState</defName>
+    <label>suicidal</label>
+    <stateClass>EndIt.MentalState_Suicidal</stateClass>
+    <category>Misc</category>
+    <prisonersCanDo>true</prisonersCanDo>
+    <slavesCanDo>true</slavesCanDo>
+    <stopsJobs>true</stopsJobs>
+    <blockRandomInteraction>true</blockRandomInteraction>
+    <!-- The state ends after an attempt; this only stops it lingering if they never find a way. -->
+    <minTicksBeforeRecovery>60000</minTicksBeforeRecovery>
+    <maxTicksBeforeRecovery>72000</maxTicksBeforeRecovery>
+    <recoveryMtbDays>1000</recoveryMtbDays>
+    <recoverFromCaptured>false</recoverFromCaptured>
+    <nameColor>(0.55, 0.6, 0.75)</nameColor>
+    <beginLetterLabel>suicidal</beginLetterLabel>
+    <beginLetter>{0} has sunk into a black despair and has decided to end it.\n\nIn a few hours they will try to take their own life: with a gun or blade on them or within reach, or failing that by hanging themselves from a gallows. Take their weapons away, keep them from the gallows, or keep them restrained.</beginLetter>
+    <beginLetterDef>ThreatSmall</beginLetterDef>
+    <recoveryMessage>{0} is no longer suicidal.</recoveryMessage>
+    <baseInspectLine>Mental state: suicidal</baseInspectLine>
+    <allowBeatfire>false</allowBeatfire>
+  </MentalStateDef>
+
+  <JobDef>
+    <defName>EndIt_HangSelf</defName>
+    <driverClass>EndIt.JobDriver_HangSelf</driverClass>
+    <reportString>putting on the noose.</reportString>
+    <playerInterruptible>false</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <alwaysShowReport>true</alwaysShowReport>
+  </JobDef>
+
+  <!-- ===== Brainwashing station ===== -->
+
+  <ResearchProjectDef>
+    <defName>EndIt_BrainwashResearch</defName>
+    <label>mind conditioning</label>
+    <description>Build a brainwashing station: a strap chair facing a television that plays hypnotic patterns and subliminal messages for hours, rewriting what a prisoner or slave believes.</description>
+    <baseCost>1200</baseCost>
+    <techLevel>Industrial</techLevel>
+    <researchViewX>1.00</researchViewX>
+    <researchViewY>15.00</researchViewY>
+  </ResearchProjectDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>EndIt_Brainwasher</defName>
+    <label>brainwashing station</label>
+    <description>A padded strap chair with a head clamp, facing an old television that plays hypnotic spirals and subliminal messages. Select it and press "Brainwash..." to convert a prisoner or slave to an ideoligion, or to break a prisoner's unwavering loyalty. A session takes 4 hours of powered running; the subject is left catatonic for 5 hours afterwards.</description>
+    <thingClass>Building</thingClass>
+    <graphicData>
+      <texPath>Things/Building/EndIt_Brainwasher</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1.2,2.4)</drawSize>
+      <damageData>
+        <rect>(0.1,0.1,0.8,1.8)</rect>
+      </damageData>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <fillPercent>0.4</fillPercent>
+    <rotatable>true</rotatable>
+    <defaultPlacingRot>North</defaultPlacingRot>
+    <size>(1,2)</size>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <castEdgeShadows>false</castEdgeShadows>
+    <staticSunShadowHeight>0.25</staticSunShadowHeight>
+    <statBases>
+      <MaxHitPoints>180</MaxHitPoints>
+      <WorkToBuild>5000</WorkToBuild>
+      <Flammability>0.8</Flammability>
+      <Beauty>-10</Beauty>
+      <Mass>45</Mass>
+    </statBases>
+    <costList>
+      <Steel>60</Steel>
+      <ComponentIndustrial>4</ComponentIndustrial>
+      <Cloth>20</Cloth>
+    </costList>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+    <designationCategory>Security</designationCategory>
+    <researchPrerequisites>
+      <li>EndIt_BrainwashResearch</li>
+    </researchPrerequisites>
+    <canOverlapZones>false</canOverlapZones>
+    <tickerType>Never</tickerType>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <basePowerConsumption>250</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="EndIt.CompProperties_Brainwasher"/>
+    </comps>
+  </ThingDef>
+
+  <JobDef>
+    <defName>EndIt_StrapInBrainwash</defName>
+    <driverClass>EndIt.JobDriver_StrapInBrainwash</driverClass>
+    <reportString>strapping TargetA into the brainwashing station.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+
+  <JobDef>
+    <defName>EndIt_BeingBrainwashed</defName>
+    <driverClass>EndIt.JobDriver_BeingBrainwashed</driverClass>
+    <reportString>being brainwashed.</reportString>
+    <playerInterruptible>false</playerInterruptible>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+    <alwaysShowReport>true</alwaysShowReport>
+  </JobDef>
+
+  <HediffDef>
+    <defName>EndIt_UnderBrainwashing</defName>
+    <label>being brainwashed</label>
+    <description>Strapped in front of a screen of spirals and whispered messages. Dazed and suggestible. Ends when the session does.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.6, 0.9, 0.75)</defaultLabelColor>
+    <isBad>true</isBad>
+    <stages>
+      <li>
+        <label>mesmerized</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.25</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.4</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>EndIt_BrainwashCatatonia</defName>
+    <label>catatonic</label>
+    <description>Unresponsive after having their mind rewritten. Lasts about five hours. When it lifts, some never recover their will to live.</description>
+    <hediffClass>EndIt.Hediff_BrainwashCatatonia</hediffClass>
+    <defaultLabelColor>(0.7, 0.7, 0.85)</defaultLabelColor>
+    <isBad>true</isBad>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>12500~12500</disappearsAfterTicks>
+        <showRemainingTime>true</showRemainingTime>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.1</setMax></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <ThoughtDef>
+    <defName>EndIt_WasBrainwashed</defName>
+    <thoughtClass>Thought_Memory</thoughtClass>
+    <durationDays>10</durationDays>
+    <stackLimit>2</stackLimit>
+    <stackedEffectMultiplier>0.75</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>mind rewritten</label>
+        <description>There are hours I can't remember, and thoughts that don't feel like mine.</description>
+        <baseMoodEffect>-12</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>

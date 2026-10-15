@@ -90,4 +90,42 @@
   <EndIt_TortureReason_BreakWill_Desc>Grinds down their resistance and will twice as fast, making them much easier to recruit or enslave.</EndIt_TortureReason_BreakWill_Desc>
   <EndIt_TortureReason_Fun>For fun</EndIt_TortureReason_Fun>
   <EndIt_TortureReason_Fun_Desc>No questions asked. Bloodlust pawns love it and get recreation from it; everyone else just feels worse.</EndIt_TortureReason_Fun_Desc>
+
+  <EndIt_Suicidal_Attempt>{0} is trying to end it!</EndIt_Suicidal_Attempt>
+  <EndIt_Suicidal_ReasonRjw>Because of what was done to them.</EndIt_Suicidal_ReasonRjw>
+  <EndIt_Suicidal_ReasonBrainwash>Because of what was done to their mind.</EndIt_Suicidal_ReasonBrainwash>
+  <EndIt_Settings_SuicideBrainwash>Chance of a suicidal break after brainwashing: {0}</EndIt_Settings_SuicideBrainwash>
+  <EndIt_Settings_SuicideRjw>Chance of a suicidal break after a forced encounter (Rim Job World): {0}</EndIt_Settings_SuicideRjw>
+
+  <EndIt_Brainwash_Gizmo>Brainwash...</EndIt_Brainwash_Gizmo>
+  <EndIt_Brainwash_GizmoDesc>Choose a prisoner or slave, who straps them in, and what to change in their mind.</EndIt_Brainwash_GizmoDesc>
+  <EndIt_Brainwash_Stop>Stop brainwashing</EndIt_Brainwash_Stop>
+  <EndIt_Brainwash_StopDesc>Switch it off and release {0}. Nothing changes in their mind.</EndIt_Brainwash_StopDesc>
+  <EndIt_Brainwash_InspectPending>{0} is bringing {1}.</EndIt_Brainwash_InspectPending>
+  <EndIt_Brainwash_Inspect>Brainwashing {0}, {1} h left.</EndIt_Brainwash_Inspect>
+  <EndIt_Brainwash_NoPower>(paused: no power)</EndIt_Brainwash_NoPower>
+  <EndIt_Brainwash_Title>Brainwashing</EndIt_Brainwash_Title>
+  <EndIt_Brainwash_Subject>Subject</EndIt_Brainwash_Subject>
+  <EndIt_Brainwash_Operator>Strapped in by</EndIt_Brainwash_Operator>
+  <EndIt_Brainwash_Prisoner>prisoner</EndIt_Brainwash_Prisoner>
+  <EndIt_Brainwash_Slave>slave</EndIt_Brainwash_Slave>
+  <EndIt_Brainwash_Loyal>unwaveringly loyal</EndIt_Brainwash_Loyal>
+  <EndIt_Brainwash_Goals>Goals</EndIt_Brainwash_Goals>
+  <EndIt_Brainwash_ConvertIdeo>Convert to an ideoligion</EndIt_Brainwash_ConvertIdeo>
+  <EndIt_Brainwash_TargetIdeo>Ideoligion</EndIt_Brainwash_TargetIdeo>
+  <EndIt_Brainwash_NoIdeology>Converting to an ideoligion needs the Ideology DLC (and not classic mode).</EndIt_Brainwash_NoIdeology>
+  <EndIt_Brainwash_RemoveLoyalty>Break their unwavering loyalty (makes them recruitable)</EndIt_Brainwash_RemoveLoyalty>
+  <EndIt_Brainwash_NotLoyal>Their loyalty can't be broken: only unwaveringly loyal prisoners have any to break.</EndIt_Brainwash_NotLoyal>
+  <EndIt_Brainwash_Warning>Takes 4 hours with power. Afterwards they're catatonic for 5 hours, and there's a {0} chance they turn suicidal when they come out of it.</EndIt_Brainwash_Warning>
+  <EndIt_Brainwash_Begin>Begin</EndIt_Brainwash_Begin>
+  <EndIt_Brainwash_PickSubject>Pick a prisoner or slave.</EndIt_Brainwash_PickSubject>
+  <EndIt_Brainwash_PickOperator>Pick a colonist to strap them in.</EndIt_Brainwash_PickOperator>
+  <EndIt_Brainwash_PickGoal>Pick at least one goal.</EndIt_Brainwash_PickGoal>
+  <EndIt_Brainwash_PickIdeo>Pick an ideoligion.</EndIt_Brainwash_PickIdeo>
+  <EndIt_Brainwash_AlreadyIdeo>{0} already follows {1}.</EndIt_Brainwash_AlreadyIdeo>
+  <EndIt_Brainwash_Occupied>Someone is in the chair.</EndIt_Brainwash_Occupied>
+  <EndIt_Brainwash_DoneLabel>{0} brainwashed</EndIt_Brainwash_DoneLabel>
+  <EndIt_Brainwash_DoneText>The session on {0} is complete.\n\n{1}\n\nThey will be catatonic for about five hours.</EndIt_Brainwash_DoneText>
+  <EndIt_Brainwash_DoneIdeo>Now follows {0}.</EndIt_Brainwash_DoneIdeo>
+  <EndIt_Brainwash_DoneLoyalty>Their unwavering loyalty is broken; they can be recruited.</EndIt_Brainwash_DoneLoyalty>
 </LanguageData>
