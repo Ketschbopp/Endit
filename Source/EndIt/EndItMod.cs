@@ -45,7 +45,7 @@ namespace EndIt
         public EndItMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<EndItSettings>();
-            new Harmony("Rockets.EndIt").PatchAll(typeof(EndItMod).Assembly);
+            new Harmony("Ketschbopp.EndIt").PatchAll(typeof(EndItMod).Assembly);
         }
 
         public override string SettingsCategory() => "End It";
