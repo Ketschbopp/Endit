@@ -49,16 +49,18 @@ namespace EndIt
     }
 
     /// <summary>
-    /// Three rounds: spin the cylinder, revolver to the temple, pull. The chance set in the mod settings (one in six
-    /// by default) is the chance that one of the three pulls is live; which one is random. A live round is a pistol
-    /// End it; surviving all three ends the break.
+    /// One bullet in six chambers, the cylinder spun once, then three pulls in a row: 1 in 6 on the first pull,
+    /// 1 in 5 on the second, 1 in 4 on the third (50% overall). A live round is a pistol End it; surviving all
+    /// three ends the break.
     /// </summary>
     public class JobDriver_RussianRoulette : JobDriver, IEndItAnimated
     {
         public const int Rounds = 3;
+        public const int Chambers = 6;
 
         private int round;
-        // Which pull (0-based) is live, -1 for none, NotRolled until the game starts.
+        // Which pull (0-based) lands on the bullet, -1 if it's in a chamber that's never reached; NotRolled until
+        // the cylinder is spun.
         private int liveRound = NotRolled;
         private const int NotRolled = -2;
         private int roundStartTick = -1;
@@ -107,7 +109,10 @@ namespace EndIt
             {
                 pawn.pather?.StopDead();
                 if (liveRound == NotRolled)
-                    liveRound = Rand.Chance(EndItMod.Settings.rouletteLiveChance) ? Rand.Range(0, Rounds) : -1;
+                {
+                    int bullet = Rand.Range(0, Chambers);
+                    liveRound = bullet < Rounds ? bullet : -1;
+                }
                 if (roundStartTick < 0) StartRound();
             };
             play.tickAction = RouletteTick;
@@ -119,7 +124,8 @@ namespace EndIt
 
         private void StartRound()
         {
-            roundStartTick = Find.TickManager.TicksGame;
+            // The cylinder is only spun before the first pull; later rounds start straight at the raise.
+            roundStartTick = Find.TickManager.TicksGame - (round > 0 ? EndItAnimation.RouletteSpinTicks : 0);
             fired = false;
             dryFire = false;
         }
