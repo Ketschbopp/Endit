@@ -14,6 +14,7 @@ namespace EndIt
         public bool confirm = true;
         public bool gunExecutions = true;
         public int executionAimTicks = 75;
+        public bool noAmmoDeterioration = true;
 
         public float DeathChanceFor(WeaponStyle style)
         {
@@ -35,6 +36,7 @@ namespace EndIt
             Scribe_Values.Look(ref confirm, "confirm", true);
             Scribe_Values.Look(ref gunExecutions, "gunExecutions", true);
             Scribe_Values.Look(ref executionAimTicks, "executionAimTicks", 75);
+            Scribe_Values.Look(ref noAmmoDeterioration, "noAmmoDeterioration", true);
         }
     }
 
@@ -70,6 +72,10 @@ namespace EndIt
             list.CheckboxLabeled("EndIt_Settings_GunExecutions".Translate(), ref Settings.gunExecutions);
             list.Label("EndIt_Settings_ExecutionAim".Translate((Settings.executionAimTicks / 60f).ToString("0.0")));
             Settings.executionAimTicks = Mathf.RoundToInt(list.Slider(Settings.executionAimTicks, 0f, 240f));
+
+            list.GapLine();
+            list.CheckboxLabeled("EndIt_Settings_NoAmmoDeterioration".Translate(), ref Settings.noAmmoDeterioration,
+                "EndIt_Settings_NoAmmoDeterioration_Tip".Translate());
 
             list.End();
         }

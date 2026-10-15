@@ -23,6 +23,9 @@ A standalone mod (separate from Rocket's Airstrike in the repo root). To install
 ### Gun executions
 When the executioner has a gun equipped, prisoner, slave and guilty-colonist executions become a gunshot to the head instead of a throat cut. The executioner aims at the victim first; the aim time is set in the mod settings. Thoughts, records and tales are the same as vanilla. Executions without a gun stay vanilla.
 
+### No deterioration for bombs and ammunition
+Grenades, molotovs, launchers and other weapons that fire something explosive, mortar shells (anything loaded into a turret) and modded ammo (anything under an "Ammo" or "Shell" item category) no longer deteriorate when left outside. It applies to modded items too and can be turned off in the mod settings (needs a restart).
+
 ## Building
 ```
 cd Source/EndIt
