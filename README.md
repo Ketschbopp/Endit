@@ -1,6 +1,6 @@
 # End It (RimWorld 1.7)
 
-A standalone mod (separate from Rocket's Airstrike in the repo root). To install it, copy or symlink this `EndIt/` folder into `RimWorld/Mods/`. It needs Harmony.
+A Brutality mod.
 
 ## Features
 
