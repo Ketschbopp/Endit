@@ -14,6 +14,8 @@ namespace EndIt
         public bool confirm = true;
         public bool gunExecutions = true;
         public int executionAimTicks = 75;
+        public float suicideChanceRjw = 0.10f;
+        public float suicideChanceBrainwash = 0.10f;
 
         public float DeathChanceFor(WeaponStyle style)
         {
@@ -35,6 +37,8 @@ namespace EndIt
             Scribe_Values.Look(ref confirm, "confirm", true);
             Scribe_Values.Look(ref gunExecutions, "gunExecutions", true);
             Scribe_Values.Look(ref executionAimTicks, "executionAimTicks", 75);
+            Scribe_Values.Look(ref suicideChanceRjw, "suicideChanceRjw", 0.10f);
+            Scribe_Values.Look(ref suicideChanceBrainwash, "suicideChanceBrainwash", 0.10f);
         }
     }
 
@@ -70,6 +74,12 @@ namespace EndIt
             list.CheckboxLabeled("EndIt_Settings_GunExecutions".Translate(), ref Settings.gunExecutions);
             list.Label("EndIt_Settings_ExecutionAim".Translate((Settings.executionAimTicks / 60f).ToString("0.0")));
             Settings.executionAimTicks = Mathf.RoundToInt(list.Slider(Settings.executionAimTicks, 0f, 240f));
+
+            list.GapLine();
+            list.Label("EndIt_Settings_SuicideBrainwash".Translate(Settings.suicideChanceBrainwash.ToStringPercent()));
+            Settings.suicideChanceBrainwash = list.Slider(Settings.suicideChanceBrainwash, 0f, 1f);
+            list.Label("EndIt_Settings_SuicideRjw".Translate(Settings.suicideChanceRjw.ToStringPercent()));
+            Settings.suicideChanceRjw = list.Slider(Settings.suicideChanceRjw, 0f, 1f);
 
             list.End();
         }
@@ -107,6 +117,14 @@ namespace EndIt
         public static ThoughtDef EndIt_TorturedEnjoyed;
         public static ThoughtDef EndIt_TorturedForFunEnjoyed;
         public static ThoughtDef EndIt_PrisonerTortured;
+        public static MentalStateDef EndIt_SuicidalState;
+        public static JobDef EndIt_HangSelf;
+        public static ThingDef EndIt_Brainwasher;
+        public static JobDef EndIt_StrapInBrainwash;
+        public static JobDef EndIt_BeingBrainwashed;
+        public static HediffDef EndIt_UnderBrainwashing;
+        public static HediffDef EndIt_BrainwashCatatonia;
+        public static ThoughtDef EndIt_WasBrainwashed;
 
         static EndItDefOf()
         {

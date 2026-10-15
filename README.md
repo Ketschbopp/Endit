@@ -91,6 +91,29 @@ Electric shock needs the Electricity research. Every method also adds *being tor
 - A non-hostile prisoner's faction loses 15 goodwill.
 - With "stop before it kills them" on, the torturer holds back near the limits and stops if the prisoner nears death (heavy blood loss, near drowning, heart arrhythmia, deep hypothermia, very poor health). With it off, the prisoner can die.
 
+### Suicidal (mental break)
+A pawn who turns suicidal broods for **5 hours**, wandering aimlessly but still eating and sleeping. Then they try to end it **on their own**:
+- with **End it**, if there's a gun or blade on them or within reach (the same rules as the player's End it: equipped, inventory, then the floor nearby), with all its animations and outcomes;
+- otherwise by walking to a free **gallows** and hanging themself (noose, drop and strangling as with the gallows execution).
+- With neither, they look again every hour; after about a day the break wears off.
+- If they survive an attempt, the break ends.
+
+It's triggered by:
+- **Brainwashing:** when the catatonia after a session lifts, a 10% chance.
+- **Rim Job World** (optional, only when RJW is loaded): after a forced encounter, a 10% chance for the victim. It's detected from RJW's victim memories (`GotRaped`, `GotAnalRaped`, `GotAnalRapedByFemale`, `GotRapedUnconscious`, and any later negative `Got...Raped...` memory), rolled at most once an hour per pawn. Masochists who enjoyed it, and the social opinion memories, don't count.
+
+Both chances can be changed in the mod settings. Prisoners and slaves can have the break too.
+
+### Brainwashing station
+- **Research:** *Mind conditioning* (industrial, 1200 points).
+- **Build:** the *brainwashing station* in the **Security** tab: 60 steel, 4 components and 20 cloth, construction skill 6. It needs **250 W of power**. It's 1x2: a strap chair with a head clamp facing an old television. Rotation is the way the subject faces; facing north, you see the hypnotic spiral spinning on the screen during a session.
+- **Use:** select it and press **Brainwash...**. Pick the **subject** (a prisoner or slave), the colonist who **straps them in**, and the **goals**:
+  - **Convert to an ideoligion** of your choice (any on the map; needs Ideology, not classic mode). Their certainty is set high.
+  - **Break their unwavering loyalty**, for prisoners who have it, so they can be recruited.
+- The colonist carries them over, straps them in and switches it on. The session runs for **4 hours of powered time** (it pauses without power). **Stop brainwashing** releases them with nothing changed.
+- **During:** *being brainwashed* (dazed: consciousness and talking reduced) and a slow, dazed sway.
+- **After:** the changes apply, they're *catatonic* for **5 hours** (unconscious), and they get a "mind rewritten" memory (-12 mood for 10 days). When the catatonia lifts, there's a 10% chance they turn **suicidal**.
+
 ## Combat Extended
 End It works with or without [Combat Extended](https://github.com/CombatExtended-Continued/CombatExtended). It doesn't depend on it; the support switches on by itself when CE is loaded.
 - CE's guns are recognised as guns, so End it, gun executions, right-click Execute and Mercy kill, and Russian roulette all work with them. Launchers, grenades and bows are still excluded.
