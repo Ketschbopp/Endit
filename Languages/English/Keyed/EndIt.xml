@@ -8,6 +8,7 @@
 
   <EndIt_NotInjured>{0} is not hurt badly enough.</EndIt_NotInjured>
   <EndIt_NoWeapon>No gun or blade on {0} or within reach.</EndIt_NoWeapon>
+  <EndIt_NotLoaded>{0}'s gun is out of ammo</EndIt_NotLoaded>
   <EndIt_CantManipulate>{0} can't hold a weapon.</EndIt_CantManipulate>
   <EndIt_NotAwake>{0} is unconscious.</EndIt_NotAwake>
   <EndIt_MentalState>{0} is not in control of themselves.</EndIt_MentalState>

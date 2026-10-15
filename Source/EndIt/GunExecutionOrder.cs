@@ -60,7 +60,9 @@ namespace EndIt
                 .Translate(victim.LabelShort, weapon != null ? weapon.LabelNoCount : "weapon");
 
             string reason = null;
-            if (weapon == null)
+            if (weapon == null && GunExecution.HoldsUnloadedGun(executioner))
+                reason = "EndIt_NotLoaded".Translate(executioner.LabelShort);
+            else if (weapon == null)
                 reason = "EndIt_GunExecute_NoGun".Translate(executioner.LabelShort);
             else if (executioner.WorkTagIsDisabled(WorkTags.Violent))
                 reason = "EndIt_GunExecute_NonViolent".Translate(executioner.LabelShort);
