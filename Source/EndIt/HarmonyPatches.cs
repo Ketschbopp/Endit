@@ -118,6 +118,19 @@ namespace EndIt
             return style == WeaponStyle.Pistol || style == WeaponStyle.Rifle ? primary : null;
         }
 
+        /// <summary>The gun or blade the pawn has equipped, if any: what right-click executions and mercy kills use.</summary>
+        public static ThingWithComps HeldExecutionWeapon(Pawn pawn)
+        {
+            ThingWithComps primary = pawn?.equipment?.Primary;
+            return WeaponUtil.Classify(primary) != WeaponStyle.None ? primary : null;
+        }
+
+        public static bool IsMelee(ThingWithComps weapon)
+        {
+            WeaponStyle style = WeaponUtil.Classify(weapon);
+            return style == WeaponStyle.Blade || style == WeaponStyle.Sword;
+        }
+
         /// <summary>
         /// Aims the gun at the job's target A for the configured time before the shot.
         /// Skipped (instantly) when <paramref name="gunFor"/> finds no gun.

@@ -85,6 +85,7 @@ namespace EndIt
         public static DamageDef EndIt_ExecutionShot;
         public static DamageDef EndIt_FinishingShot;
         public static DamageDef EndIt_MercyShot;
+        public static DamageDef EndIt_MercyStab;
         public static JobDef EndIt_GunExecution;
         public static JobDef EndIt_RussianRoulette;
         public static MentalStateDef EndIt_RussianRouletteState;

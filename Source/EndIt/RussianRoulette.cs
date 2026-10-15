@@ -74,6 +74,7 @@ namespace EndIt
         public int AimTicks => Find.TickManager.TicksGame - roundStartTick;
         public bool Roulette => true;
         public bool DryFire => dryFire;
+        public Pawn Target => null;
 
         public override void ExposeData()
         {

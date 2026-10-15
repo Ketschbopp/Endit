@@ -149,6 +149,26 @@ namespace EndIt
             if (amount >= 1f) Hit(pawn, EndItDefOf.EndIt_Seppuku, amount, part, weapon);
         }
 
+        /// <summary>Mercy kill with a blade: one stab to the heart (or the neck, failing that).</summary>
+        public static void MercyStab(Pawn executioner, Pawn victim, ThingWithComps weapon)
+        {
+            SoundDefOf.Execute_Cut.PlayOneShot(new TargetInfo(victim.Position, victim.Map));
+            int blood = Mathf.Max(GenMath.RoundRandom(victim.BodySize * 3f), 1);
+            for (int i = 0; i < blood; i++) victim.health.DropBloodFilth();
+
+            BodyPartRecord part = victim.health.hediffSet.GetNotMissingParts(tag: BodyPartTagDefOf.BloodPumpingSource)
+                                      .FirstOrDefault()
+                                  ?? Part(victim, "Neck") ?? victim.RaceProps.body.corePart;
+            Vector3 dir = victim.DrawPos - executioner.DrawPos;
+            DamageInfo dinfo = new DamageInfo(EndItDefOf.EndIt_MercyStab, MaxHp(victim, part) + 20f, 999f, dir.AngleFlat(),
+                executioner, part, weapon.def, instigatorGuilty: true);
+            dinfo.SetIgnoreInstantKillProtection(true);
+            dinfo.SetAllowDamagePropagation(false);
+            dinfo.SetIgnoreArmor(true);
+            victim.TakeDamage(dinfo);
+            if (!victim.Dead) victim.Kill(dinfo);
+        }
+
         /// <summary>Gunshot replacement for vanilla's throat-cut execution.</summary>
         public static void ExecuteByGunshot(Pawn executioner, Pawn victim, ThingWithComps weapon, DamageDef damageDef = null,
             bool notifyDeath = false)

@@ -26,14 +26,16 @@ A Brutality mod.
 When the executioner has a gun equipped, prisoner, slave and guilty-colonist executions become a gunshot to the head instead of a throat cut. The executioner aims at the victim first; the aim time is set in the mod settings. Thoughts, records and tales are the same as vanilla. Executions without a gun stay vanilla.
 
 ### Right-click executions
-Select a colonist and right-click a **prisoner** or a **downed enemy** to get *Execute (name) with (gun)*. The colonist walks up, aims for the execution aim time, and shoots them in the head.
-- Needs a gun equipped (the same guns that count for End it). Without one, or if the colonist is incapable of violence or can't reach the target, the option is greyed out with the reason.
+Select a colonist and right-click a **prisoner** or a **downed enemy** to get *Execute (name) with (weapon)*.
+- **Gun:** the colonist walks up, aims for the execution aim time, and shoots them in the head.
+- **Knife, sword or other blade:** the colonist walks up, raises the blade over them, holds it there with shaking hands for the execution aim time, drives it in, then pulls it out. Executions cut the throat (vanilla's execution cut); mercy kills stab the heart.
+- Needs a gun or blade equipped (the same weapons that count for End it; clubs and other blunt weapons don't). Without one, or if the colonist is incapable of violence or can't reach the target, the option is greyed out with the reason.
 - Prisoners: same thoughts, tale and history event as a vanilla prisoner execution.
 - Downed enemies: just a kill, with no execution thoughts.
 - Works regardless of the "Executioners with a gun shoot the prisoner" setting.
 
 ### Mercy kill
-Right-click a **downed, unconscious friendly pawn** (a colonist, an ally, a visitor or a tame animal) with a gun-carrying colonist selected to get *Mercy kill (name) with (gun)*. It works like the right-click execution: walk up, aim, one shot to the head.
+Right-click a **downed, unconscious friendly pawn** (a colonist, an ally, a visitor or a tame animal) with a gun-carrying colonist selected to get *Mercy kill (name) with (gun)*. It works like the right-click execution, with a gun (one shot to the head) or a blade (a stab to the heart).
 - For your own colonists and animals you're asked to confirm first (turn this off with the "Ask for confirmation" setting).
 - It isn't an execution: no execution thoughts, and the death is announced as "(name) was given a merciful death." The usual thoughts about someone dying still apply.
 - If the pawn wakes up before the shot, the order is called off.
