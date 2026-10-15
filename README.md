@@ -36,7 +36,7 @@ Select a colonist and right-click a **prisoner** or a **downed enemy** to get *E
 An extreme mental break that can only happen to a pawn carrying a **revolver**, either equipped or in their inventory. Any gun with "revolver" in its name counts.
 - The pawn equips the revolver if it's in their inventory, and puts whatever they were holding into their inventory.
 - **Three rounds.** Each round they spin the cylinder at chest height, raise the revolver to their temple, hesitate with trembling hands, and pull the trigger.
-- **Each pull is random**, with a 1 in 6 chance of a live round by default (adjustable in the mod settings).
+- **Chance of a live round:** 1 in 6 over the whole game by default (adjustable in the mod settings). If there is one, which of the three pulls fires is random.
   - **Empty chamber:** a *click*, a startled twitch, and the revolver comes down for the next round.
   - **Live round:** the same as a pistol End it, so whether it kills follows the pistol death chance. If they survive the shot, the break ends.
 - After three empty chambers the break ends with a "pulled the trigger 3 times and lived" message.

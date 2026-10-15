@@ -31,5 +31,5 @@
   <EndIt_Settings_Confirm>Ask for confirmation</EndIt_Settings_Confirm>
   <EndIt_Settings_GunExecutions>Executioners with a gun shoot the prisoner instead of cutting</EndIt_Settings_GunExecutions>
   <EndIt_Settings_ExecutionAim>Execution aim time: {0} s</EndIt_Settings_ExecutionAim>
-  <EndIt_Settings_RouletteChance>Russian roulette: chance each pull fires: {0}</EndIt_Settings_RouletteChance>
+  <EndIt_Settings_RouletteChance>Russian roulette: chance one of the three pulls fires: {0}</EndIt_Settings_RouletteChance>
 </LanguageData>

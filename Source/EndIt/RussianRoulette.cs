@@ -49,14 +49,18 @@ namespace EndIt
     }
 
     /// <summary>
-    /// Three rounds: spin the cylinder, revolver to the temple, pull. Each pull is live with the chance set in
-    /// the mod settings (one in six by default). A live round is a pistol End it; surviving all three ends the break.
+    /// Three rounds: spin the cylinder, revolver to the temple, pull. The chance set in the mod settings (one in six
+    /// by default) is the chance that one of the three pulls is live; which one is random. A live round is a pistol
+    /// End it; surviving all three ends the break.
     /// </summary>
     public class JobDriver_RussianRoulette : JobDriver, IEndItAnimated
     {
         public const int Rounds = 3;
 
         private int round;
+        // Which pull (0-based) is live, -1 for none, NotRolled until the game starts.
+        private int liveRound = NotRolled;
+        private const int NotRolled = -2;
         private int roundStartTick = -1;
         private bool fired;
         private bool dryFire;
@@ -73,6 +77,7 @@ namespace EndIt
         {
             base.ExposeData();
             Scribe_Values.Look(ref round, "round");
+            Scribe_Values.Look(ref liveRound, "liveRound", NotRolled);
             Scribe_Values.Look(ref roundStartTick, "roundStartTick", -1);
             Scribe_Values.Look(ref fired, "fired");
             Scribe_Values.Look(ref dryFire, "dryFire");
@@ -101,6 +106,8 @@ namespace EndIt
             play.initAction = () =>
             {
                 pawn.pather?.StopDead();
+                if (liveRound == NotRolled)
+                    liveRound = Rand.Chance(EndItMod.Settings.rouletteLiveChance) ? Rand.Range(0, Rounds) : -1;
                 if (roundStartTick < 0) StartRound();
             };
             play.tickAction = RouletteTick;
@@ -125,7 +132,7 @@ namespace EndIt
             if (!fired && ticks >= EndItAnimation.RouletteFireTick)
             {
                 fired = true;
-                if (Rand.Chance(EndItMod.Settings.rouletteLiveChance))
+                if (round == liveRound)
                 {
                     Vector3 muzzle = EndItAnimation.TryGetWorldPose(pawn, this, pawn.DrawPos, out _, out _, out Vector3 tip)
                         ? tip
