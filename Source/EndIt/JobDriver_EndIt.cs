@@ -24,6 +24,7 @@ namespace EndIt
         public int AimTicks => Find.TickManager.TicksGame - aimStartTick;
         public bool Roulette => false;
         public bool DryFire => false;
+        public Pawn Target => null;
 
         public override void ExposeData()
         {

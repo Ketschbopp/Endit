@@ -23,6 +23,9 @@ namespace EndIt
 
         /// <summary>Russian roulette: this pull was an empty chamber.</summary>
         bool DryFire { get; }
+
+        /// <summary>Melee execution: the pawn being struck. Null for self-directed animations.</summary>
+        Pawn Target { get; }
     }
 
     public static class EndItAnimation
@@ -98,6 +101,16 @@ namespace EndIt
 
         // Held flat in front of the chest, barrel to the right, while the cylinder is spun.
         private static readonly Pose RouletteChest = new Pose(new Vector2(0.06f, -0.4f), 90f);
+
+        // Melee execution / mercy kill: raise the blade, hold (the execution aim time), drive it in, hold, pull out.
+        private const int StrikeRaiseTicks = 35;
+        private const int StrikeThrustTicks = 6;
+        private const int StrikeInTicks = 18;
+        private const int StrikeWithdrawTicks = 25;
+
+        private static int StrikeHoldTicks => Mathf.Max(20, EndItMod.Settings.executionAimTicks);
+        public static int StrikeTick => StrikeRaiseTicks + StrikeHoldTicks + StrikeThrustTicks;
+        public static int StrikeEndTick => StrikeTick + StrikeInTicks + StrikeWithdrawTicks;
 
         public static Timeline TimelineFor(WeaponStyle style)
         {
@@ -308,6 +321,7 @@ namespace EndIt
             angle = 0f;
             ThingWithComps weapon = pawn.equipment?.Primary;
             if (weapon == null || !driver.Aiming) return false;
+            if (driver.Target != null) return TryGetStrikePose(pawn, driver, weapon, drawLoc, out center, out angle, out tipWorld);
 
             PawnRenderer renderer = pawn.Drawer?.renderer;
             if (renderer == null) return false;
@@ -337,6 +351,73 @@ namespace EndIt
             tipWorld = head + bodyRot * new Vector3(tip.x, 0f, tip.y);
             tipWorld.y = AltitudeLayer.MoteOverhead.AltitudeFor();
             angle = local.Angle + bodyAngle;
+            return true;
+        }
+
+        /// <summary>
+        /// Melee execution in world space: the blade is lifted above the pawn pointing at the target, held there
+        /// with shaking hands, driven into the target's body, held, then pulled out and lowered.
+        /// </summary>
+        private static bool TryGetStrikePose(Pawn pawn, IEndItAnimated driver, Thing weapon, Vector3 drawLoc,
+            out Vector3 center, out float angle, out Vector3 tipWorld)
+        {
+            Pawn target = driver.Target;
+            Vector3 targetPos = target.Dead && target.Corpse != null ? target.Corpse.DrawPos : target.DrawPos;
+            Vector3 to = targetPos - drawLoc;
+            to.y = 0f;
+            float dist = to.magnitude;
+            Vector3 dir = dist > 0.01f ? to / dist : Vector3.forward;
+            float aim = to.AngleFlat();
+            float halfLen = HalfLength(weapon);
+
+            Vector3 restPos = drawLoc + dir * 0.28f + new Vector3(0f, 0f, -0.12f);
+            float restAngle = aim + 110f;
+            Vector3 raisedPos = drawLoc + dir * 0.12f + new Vector3(0f, 0f, 0.42f);
+            float raisedAngle = aim - 15f;
+            // Tip buried a little past the centre of the target's body.
+            Vector3 strikePos = targetPos + dir * 0.1f - dir * halfLen;
+
+            int t = driver.AimTicks;
+            int holdEnd = StrikeRaiseTicks + StrikeHoldTicks;
+            Vector3 pos;
+            if (t < StrikeRaiseTicks)
+            {
+                float s = Smooth((float)t / StrikeRaiseTicks);
+                pos = Vector3.Lerp(restPos, raisedPos, s);
+                angle = Mathf.LerpAngle(restAngle, raisedAngle, s);
+            }
+            else if (t < holdEnd)
+            {
+                float hold = (float)(t - StrikeRaiseTicks) / StrikeHoldTicks;
+                float n = t + pawn.thingIDNumber % 97;
+                float amp = 0.006f + 0.012f * hold;
+                pos = raisedPos + new Vector3(Mathf.Sin(n * 0.91f) * amp, 0f, Mathf.Cos(n * 1.37f) * amp);
+                // Drawn back a touch just before the blow.
+                pos -= dir * 0.08f * Smooth((hold - 0.7f) / 0.3f);
+                angle = raisedAngle + Mathf.Sin(n * 1.13f) * 2f * hold;
+            }
+            else if (t < StrikeTick)
+            {
+                float s = Smooth((float)(t - holdEnd) / StrikeThrustTicks);
+                pos = Vector3.Lerp(raisedPos - dir * 0.08f, strikePos, s);
+                angle = Mathf.LerpAngle(raisedAngle, aim, s);
+            }
+            else if (t < StrikeTick + StrikeInTicks)
+            {
+                pos = strikePos;
+                angle = aim;
+            }
+            else
+            {
+                float s = Smooth((float)(t - StrikeTick - StrikeInTicks) / StrikeWithdrawTicks);
+                pos = Vector3.Lerp(strikePos, restPos, s);
+                angle = Mathf.LerpAngle(aim, restAngle, s);
+            }
+
+            center = pos;
+            center.y = drawLoc.y + Mathf.Max(PawnRenderUtility.AltitudeForLayer(90f), 0.035f);
+            tipWorld = targetPos;
+            tipWorld.y = AltitudeLayer.MoteOverhead.AltitudeFor();
             return true;
         }
 

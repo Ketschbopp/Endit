@@ -15,7 +15,9 @@
 
   <EndIt_Seppuku>{0} has cut open their stomach and is bleeding out.</EndIt_Seppuku>
   <EndIt_GunExecute>Execute {0} with {1}</EndIt_GunExecute>
-  <EndIt_GunExecute_NoGun>{0} needs a gun equipped</EndIt_GunExecute_NoGun>
+  <EndIt_MercyKill>Mercy kill {0} with {1}</EndIt_MercyKill>
+  <EndIt_MercyKillConfirm>Are you sure you want {0} to put {1} out of their misery?\n\nThis cannot be undone.</EndIt_MercyKillConfirm>
+  <EndIt_GunExecute_NoGun>{0} needs a gun or blade equipped</EndIt_GunExecute_NoGun>
   <EndIt_GunExecute_NonViolent>{0} is incapable of violence</EndIt_GunExecute_NonViolent>
   <EndIt_GunExecute_NoPath>no path</EndIt_GunExecute_NoPath>
   <EndIt_GunExecute_Reserved>someone else is busy with them</EndIt_GunExecute_Reserved>
