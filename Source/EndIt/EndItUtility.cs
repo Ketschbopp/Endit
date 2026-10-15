@@ -44,7 +44,7 @@ namespace EndIt
             else if (!pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
                 reason = "EndIt_CantManipulate".Translate(name);
             else if (!WeaponUtil.TryFindWeapon(pawn, out weapon, out source))
-                reason = "EndIt_NoWeapon".Translate(name);
+                reason = GunExecution.HoldsUnloadedGun(pawn) ? "EndIt_NotLoaded".Translate(name) : "EndIt_NoWeapon".Translate(name);
 
             return reason == null;
         }

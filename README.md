@@ -57,6 +57,13 @@ An extreme mental break that can only happen to a pawn carrying a **revolver**, 
 - **Consequences:** same mood effects, history event and tale as a vanilla execution, and no death letter.
 - If there's no free gallows, the warden won't start, and the job shows "No free gallows". Changing the prisoner's mode before they're on the gallows calls it off.
 
+## Combat Extended
+End It works with or without [Combat Extended](https://github.com/CombatExtended-Continued/CombatExtended). It doesn't depend on it; the support switches on by itself when CE is loaded.
+- CE's guns are recognised as guns, so End it, gun executions, right-click Execute and Mercy kill, and Russian roulette all work with them. Launchers, grenades and bows are still excluded.
+- With CE's ammo system on, a gun has to have something to fire: a round in the magazine, or ammo on hand for guns without one. An empty gun is treated as no gun, and the option says "(name)'s gun is out of ammo".
+- Each shot (End it, executions, a live round in Russian roulette) takes one round out of the magazine.
+- Knives, swords, seppuku and the gallows work the same with or without CE.
+
 ## Building
 ```
 cd Source/EndIt

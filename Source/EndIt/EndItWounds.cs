@@ -204,6 +204,7 @@ namespace EndIt
 
         public static void PlayShot(ThingWithComps weapon, Pawn shooter, Vector3 muzzle)
         {
+            CombatExtendedCompat.ConsumeRound(weapon);
             Map map = shooter.Map;
             VerbProperties verb = WeaponUtil.PrimaryVerb(weapon.def);
             TargetInfo at = new TargetInfo(shooter.Position, map);

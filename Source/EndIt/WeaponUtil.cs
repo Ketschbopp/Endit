@@ -59,11 +59,26 @@ namespace EndIt
         {
             if (def == null || !def.IsRangedWeapon || def.techLevel < TechLevel.Industrial) return false;
             VerbProperties verb = PrimaryVerb(def);
-            if (verb == null || verb.verbClass == null || !typeof(Verb_Shoot).IsAssignableFrom(verb.verbClass)) return false;
+            if (verb == null || verb.verbClass == null || !IsShootVerb(verb.verbClass)) return false;
             ProjectileProperties proj = verb.defaultProjectile?.projectile;
             if (proj == null || proj.damageDef == null) return false;
             // Launchers, grenades, EMP/smoke and the like are not something you put to your head.
             return proj.damageDef.harmsHealth && !proj.damageDef.isExplosive && proj.explosionRadius <= 0f;
+        }
+
+        /// <summary>Vanilla's Verb_Shoot, or Combat Extended's Verb_ShootCE.</summary>
+        private static bool IsShootVerb(System.Type verbClass)
+        {
+            return typeof(Verb_Shoot).IsAssignableFrom(verbClass) || CombatExtendedCompat.IsShootVerb(verbClass);
+        }
+
+        public static bool IsGunStyle(WeaponStyle style) => style == WeaponStyle.Pistol || style == WeaponStyle.Rifle;
+
+        /// <summary>Blades always; guns only if they can fire (with Combat Extended, if they have ammo).</summary>
+        public static bool IsReady(Thing weapon)
+        {
+            WeaponStyle style = Classify(weapon);
+            return style != WeaponStyle.None && (!IsGunStyle(style) || CombatExtendedCompat.CanFire(weapon));
         }
 
         public static bool IsPistol(ThingDef def)
@@ -105,7 +120,7 @@ namespace EndIt
 
         private static bool Usable(Thing thing, Pawn pawn)
         {
-            return thing is ThingWithComps && Classify(thing) != WeaponStyle.None && EquipmentUtility.CanEquip(thing, pawn);
+            return thing is ThingWithComps && IsReady(thing) && EquipmentUtility.CanEquip(thing, pawn);
         }
 
         /// <summary>

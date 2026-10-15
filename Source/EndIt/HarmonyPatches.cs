@@ -110,19 +110,25 @@ namespace EndIt
             return EndItMod.Settings.gunExecutions ? HeldGun(executioner) : null;
         }
 
-        /// <summary>The gun the pawn has equipped, if any.</summary>
+        /// <summary>The gun the pawn has equipped, if any and if it can fire.</summary>
         public static ThingWithComps HeldGun(Pawn pawn)
         {
             ThingWithComps primary = pawn?.equipment?.Primary;
-            WeaponStyle style = WeaponUtil.Classify(primary);
-            return style == WeaponStyle.Pistol || style == WeaponStyle.Rifle ? primary : null;
+            return WeaponUtil.IsGunStyle(WeaponUtil.Classify(primary)) && WeaponUtil.IsReady(primary) ? primary : null;
+        }
+
+        /// <summary>Holding a gun that can't fire (Combat Extended: out of ammo).</summary>
+        public static bool HoldsUnloadedGun(Pawn pawn)
+        {
+            ThingWithComps primary = pawn?.equipment?.Primary;
+            return WeaponUtil.IsGunStyle(WeaponUtil.Classify(primary)) && !WeaponUtil.IsReady(primary);
         }
 
         /// <summary>The gun or blade the pawn has equipped, if any: what right-click executions and mercy kills use.</summary>
         public static ThingWithComps HeldExecutionWeapon(Pawn pawn)
         {
             ThingWithComps primary = pawn?.equipment?.Primary;
-            return WeaponUtil.Classify(primary) != WeaponStyle.None ? primary : null;
+            return WeaponUtil.IsReady(primary) ? primary : null;
         }
 
         public static bool IsMelee(ThingWithComps weapon)
