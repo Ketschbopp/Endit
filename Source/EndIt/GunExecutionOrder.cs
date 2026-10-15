@@ -8,7 +8,7 @@ namespace EndIt
 {
     /// <summary>
     /// Right-clicking a prisoner or a downed enemy with a gun-carrying colonist selected offers to shoot them;
-    /// right-clicking a downed, unconscious friendly pawn offers a mercy kill.
+    /// right-clicking a downed friendly pawn offers a mercy kill.
     /// </summary>
     public static class GunExecutionOrder
     {
@@ -20,11 +20,19 @@ namespace EndIt
                        || IsMercyTarget(victim));
         }
 
-        /// <summary>A friendly (non-hostile, non-prisoner) pawn that is down and unconscious.</summary>
+        // The health tab's "medium" pain starts here; "severe" and "extreme" are above it.
+        private const float ModeratePain = 0.15f;
+
+        /// <summary>
+        /// A friendly (non-hostile, non-prisoner) pawn that is down and suffering: in moderate pain or worse, or
+        /// unconscious and bleeding.
+        /// </summary>
         public static bool IsMercyTarget(Pawn victim)
         {
-            return victim != null && victim.Downed && !victim.Awake() && !victim.IsPrisonerOfColony
-                   && !victim.HostileTo(Faction.OfPlayer);
+            if (victim == null || !victim.Downed || victim.IsPrisonerOfColony || victim.HostileTo(Faction.OfPlayer))
+                return false;
+            HediffSet health = victim.health.hediffSet;
+            return health.PainTotal >= ModeratePain || (!victim.Awake() && health.BleedRateTotal > 0f);
         }
 
         public static void AddOptions(List<Pawn> selectedPawns, Vector3 clickPos, List<FloatMenuOption> options)
