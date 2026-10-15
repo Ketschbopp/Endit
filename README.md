@@ -16,9 +16,11 @@ A standalone mod (separate from Rocket's Airstrike in the repo root). To install
   - **Pistol:** raised to the right temple.
   - **Rifle or long gun:** muzzle under the chin.
   - **Knife or blade:** edge against the throat, then a slash.
+  - **Sword (seppuku):** the pawn turns the sword around, holds it in both hands with the tip at the belly, drives it in, then drags it slowly across from their left to right before letting go. Swords are recognised by name (sword, katana, wakizashi, tanto, gladius, zweihander, saber, rapier, scimitar, cutlass).
 
   Each one has a hesitation beat and trembling hands. Guns also show a muzzle flash and smoke, play the weapon's own shot sound and recoil. The animation still works while the pawn is lying downed.
-- **Outcome:** the wound is always severe. Whether it kills depends on the death chance in the mod settings (defaults: pistol 80%, rifle 90%, blade 60%). Survivors take a jaw, eye, skull, brain, ear or throat wound and may still bleed out.
+- **Seppuku outcome:** never an instant death. The stab cuts the stomach; the drag cuts the liver, kidneys and torso. Every part is left with a couple of hit points so nothing is destroyed outright. The pawn goes down from the pain and bleeds to death within a few hours unless someone tends them. If the pawn passes out before the drag finishes, the cut is still applied in full. The blade death-chance setting doesn't apply to seppuku.
+- **Outcome (other weapons):** the wound is always severe. Whether it kills depends on the death chance in the mod settings (defaults: pistol 80%, rifle 90%, blade 60%). Survivors take a jaw, eye, skull, brain, ear or throat wound and may still bleed out.
 
 ### Gun executions
 When the executioner has a gun equipped, prisoner, slave and guilty-colonist executions become a gunshot to the head instead of a throat cut. The executioner aims at the victim first; the aim time is set in the mod settings. Thoughts, records and tales are the same as vanilla. Executions without a gun stay vanilla.

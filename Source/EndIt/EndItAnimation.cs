@@ -50,6 +50,27 @@ namespace EndIt
 
         private const int SlashTicks = 8;
 
+        // Seppuku: thrust into the belly at Fire, drag across it, hold, then the hands let go.
+        private const int SeppukuThrustTicks = 6;
+        private const int SeppukuDragTicks = 60;
+        private const int SeppukuHoldTicks = 25;
+        private const int SeppukuDropTicks = 35;
+
+        /// <summary>Ticks after Fire when the drag across the belly is finished.</summary>
+        public const int SeppukuCutTicks = SeppukuThrustTicks + SeppukuDragTicks;
+
+        private static readonly Timeline SwordTimeline =
+            new Timeline(70, 190, 190 + SeppukuCutTicks + SeppukuHoldTicks + SeppukuDropTicks);
+
+        // The belly, left to right as the pawn sees it (facing south, their left is screen-right).
+        private static readonly Vector2 BellyStart = new Vector2(0.13f, -0.44f);
+        private static readonly Vector2 BellyEnd = new Vector2(-0.13f, -0.44f);
+        // How far in front of the belly the tip hovers before the thrust.
+        private const float SeppukuReach = 0.14f;
+        // The blade points back into the body, so it extends down-screen from the belly.
+        private const float SeppukuStartAngle = 10f;
+        private const float SeppukuEndAngle = 350f;
+
         // Where the weapon hangs before it's raised: low and to the right, pointing down.
         private static readonly Vector2 RestPoint = new Vector2(0.32f, -0.62f);
         private const float RestAngle = 160f;
@@ -60,6 +81,7 @@ namespace EndIt
             {
                 case WeaponStyle.Pistol: return PistolTimeline;
                 case WeaponStyle.Rifle: return RifleTimeline;
+                case WeaponStyle.Sword: return SwordTimeline;
                 default: return BladeTimeline;
             }
         }
@@ -105,6 +127,8 @@ namespace EndIt
         /// <summary>Weapon pose at a given tick of the aim toil, in the head-relative frame.</summary>
         private static Pose LocalPose(WeaponStyle style, int ticks, float halfLen, int seed, out Vector2 tip)
         {
+            if (style == WeaponStyle.Sword) return SeppukuPose(ticks, halfLen, seed, out tip);
+
             Timeline tl = TimelineFor(style);
             Pose rest = new Pose(RestPoint, RestAngle);
             Pose aim = AimPose(style, halfLen, out tip);
@@ -114,21 +138,7 @@ namespace EndIt
                 return Pose.Lerp(rest, aim, Smooth((float)ticks / tl.Raise));
             }
 
-            if (ticks < tl.Fire)
-            {
-                float hold = (float)(ticks - tl.Raise) / (tl.Fire - tl.Raise);
-
-                // A moment of doubt: the weapon sags partway back down, then comes back up.
-                float doubt = hold > 0.25f && hold < 0.6f ? Mathf.Sin(Mathf.PI * (hold - 0.25f) / 0.35f) * 0.3f : 0f;
-                Pose p = Pose.Lerp(aim, rest, doubt);
-
-                // Trembling hands, worse the longer it goes on.
-                float amp = 0.008f + 0.02f * hold;
-                float t = ticks + seed;
-                p.Pos += new Vector2(Mathf.Sin(t * 0.91f) * amp, Mathf.Cos(t * 1.37f) * amp);
-                p.Angle += Mathf.Sin(t * 1.13f) * 3f * hold;
-                return p;
-            }
+            if (ticks < tl.Fire) return Hesitate(aim, rest, ticks, tl, seed);
 
             int after = ticks - tl.Fire;
 
@@ -153,6 +163,70 @@ namespace EndIt
             Pose kicked = new Pose(aim.Pos + away + new Vector2(0f, 0.08f), aim.Angle + (style == WeaponStyle.Pistol ? 35f : 20f));
             if (after < kick) return Pose.Lerp(aim, kicked, Smooth((float)after / kick));
             return Pose.Lerp(kicked, rest, Smooth((float)(after - kick) / Mathf.Max(1, tl.End - tl.Fire - kick)));
+        }
+
+        /// <summary>Between Raise and Fire: a moment of doubt and trembling hands.</summary>
+        private static Pose Hesitate(Pose aim, Pose rest, int ticks, Timeline tl, int seed)
+        {
+            float hold = (float)(ticks - tl.Raise) / (tl.Fire - tl.Raise);
+
+            // A moment of doubt: the weapon sags partway back down, then comes back up.
+            float doubt = hold > 0.25f && hold < 0.6f ? Mathf.Sin(Mathf.PI * (hold - 0.25f) / 0.35f) * 0.3f : 0f;
+            Pose p = Pose.Lerp(aim, rest, doubt);
+
+            // Trembling hands, worse the longer it goes on.
+            return Tremble(p, ticks, seed, 0.008f + 0.02f * hold, 3f * hold);
+        }
+
+        private static Pose Tremble(Pose p, int ticks, int seed, float amp, float angleAmp)
+        {
+            float t = ticks + seed;
+            p.Pos += new Vector2(Mathf.Sin(t * 0.91f) * amp, Mathf.Cos(t * 1.37f) * amp);
+            p.Angle += Mathf.Sin(t * 1.13f) * angleAmp;
+            return p;
+        }
+
+        /// <summary>
+        /// Seppuku: the sword is turned around and held in both hands with the tip at the belly, driven in,
+        /// dragged slowly across from the pawn's left to right, held there, then the hands let go.
+        /// </summary>
+        private static Pose SeppukuPose(int ticks, float halfLen, int seed, out Vector2 tip)
+        {
+            Timeline tl = SwordTimeline;
+            Pose rest = new Pose(RestPoint, RestAngle);
+            Vector2 readyTip = BellyStart + new Vector2(0f, -SeppukuReach);
+            Pose ready = PointedAt(readyTip, SeppukuStartAngle, halfLen);
+            tip = readyTip;
+
+            if (ticks < tl.Raise) return Pose.Lerp(rest, ready, Smooth((float)ticks / tl.Raise));
+            if (ticks < tl.Fire) return Hesitate(ready, rest, ticks, tl, seed);
+
+            int after = ticks - tl.Fire;
+            if (after < SeppukuThrustTicks)
+            {
+                tip = Vector2.Lerp(readyTip, BellyStart, Smooth((float)after / SeppukuThrustTicks));
+                return PointedAt(tip, SeppukuStartAngle, halfLen);
+            }
+
+            after -= SeppukuThrustTicks;
+            if (after < SeppukuDragTicks)
+            {
+                // Slow and uneven: the blade catches and has to be forced along.
+                float s = Smooth((float)after / SeppukuDragTicks);
+                s = Mathf.Clamp01(s + Mathf.Sin(after * 0.6f) * 0.015f);
+                tip = Vector2.Lerp(BellyStart, BellyEnd, s);
+                Pose drag = PointedAt(tip, Mathf.LerpAngle(SeppukuStartAngle, SeppukuEndAngle, s), halfLen);
+                return Tremble(drag, ticks, seed, 0.006f, 2f);
+            }
+
+            Pose cut = PointedAt(BellyEnd, SeppukuEndAngle, halfLen);
+            after -= SeppukuDragTicks;
+            tip = BellyEnd;
+            if (after < SeppukuHoldTicks)
+                return Tremble(cut, ticks, seed, 0.01f + 0.01f * after / SeppukuHoldTicks, 3f);
+
+            after -= SeppukuHoldTicks;
+            return Pose.Lerp(cut, rest, Smooth((float)after / SeppukuDropTicks));
         }
 
         private static float Smooth(float t)

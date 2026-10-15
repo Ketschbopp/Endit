@@ -14,6 +14,7 @@ namespace EndIt
     {
         private int aimStartTick = -1;
         private bool fired;
+        private bool cutDone;
         private WeaponStyle style = WeaponStyle.None;
 
         private ThingWithComps Weapon => TargetThingA as ThingWithComps;
@@ -27,6 +28,7 @@ namespace EndIt
             base.ExposeData();
             Scribe_Values.Look(ref aimStartTick, "aimStartTick", -1);
             Scribe_Values.Look(ref fired, "fired");
+            Scribe_Values.Look(ref cutDone, "cutDone");
             Scribe_Values.Look(ref style, "style");
         }
 
@@ -43,6 +45,8 @@ namespace EndIt
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOn(() => Weapon == null || Weapon.Destroyed);
+            // Seppuku: once the blade is in, the cut always happens, even if the pawn passes out first.
+            AddFinishAction(_ => FinishSeppukuCut());
 
             Toil equip = ToilMaker.MakeToil("EndIt_Equip");
             equip.initAction = () =>
@@ -68,6 +72,7 @@ namespace EndIt
                 }
                 aimStartTick = Find.TickManager.TicksGame;
                 fired = false;
+                cutDone = false;
                 pawn.pather?.StopDead();
                 if (!pawn.Downed) pawn.Rotation = Rot4.South;
             };
@@ -85,6 +90,12 @@ namespace EndIt
             EndItAnimation.Timeline t = EndItAnimation.TimelineFor(style);
             int ticks = AimTicks;
 
+            if (style == WeaponStyle.Sword)
+            {
+                SeppukuTick(t, ticks);
+                return;
+            }
+
             if (!fired && ticks >= t.Fire)
             {
                 fired = true;
@@ -97,6 +108,39 @@ namespace EndIt
             }
 
             if (ticks >= t.End) ReadyForNextToil();
+        }
+
+        private void SeppukuTick(EndItAnimation.Timeline t, int ticks)
+        {
+            if (!fired && ticks >= t.Fire)
+            {
+                fired = true;
+                EndItWounds.SeppukuStab(pawn, Weapon);
+                if (ended || pawn.Dead) return;
+            }
+
+            if (fired && !cutDone)
+            {
+                int dragged = ticks - t.Fire;
+                if (dragged >= EndItAnimation.SeppukuCutTicks)
+                {
+                    FinishSeppukuCut();
+                    if (ended || pawn.Dead) return;
+                }
+                else if (dragged > 0 && dragged % 15 == 0 && pawn.Spawned)
+                {
+                    pawn.health.DropBloodFilth();
+                }
+            }
+
+            if (ticks >= t.End) ReadyForNextToil();
+        }
+
+        private void FinishSeppukuCut()
+        {
+            if (style != WeaponStyle.Sword || !fired || cutDone || pawn.Dead) return;
+            cutDone = true;
+            EndItWounds.SeppukuCut(pawn, Weapon);
         }
 
         private bool TryEquip()

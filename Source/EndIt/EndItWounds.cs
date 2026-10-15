@@ -108,6 +108,47 @@ namespace EndIt
             Hit(pawn, def, hp * Rand.Range(0.35f, 0.6f), neck, weapon);
         }
 
+        /// <summary>Seppuku, part one: the blade goes into the stomach.</summary>
+        public static void SeppukuStab(Pawn pawn, ThingWithComps weapon)
+        {
+            SoundDefOf.Execute_Cut.PlayOneShot(new TargetInfo(pawn.Position, pawn.Map));
+            for (int i = 0; i < 2; i++) pawn.health.DropBloodFilth();
+
+            BodyPartRecord stomach = Part(pawn, "Stomach");
+            if (stomach != null)
+                CutPart(pawn, weapon, stomach, 0.85f);
+            else
+                CutPart(pawn, weapon, pawn.RaceProps.body.corePart, 0.2f);
+        }
+
+        /// <summary>
+        /// Seppuku, part two: the blade is dragged across the belly. Nothing here is destroyed outright;
+        /// the pawn goes down from the pain and bleeds to death within a few hours unless tended.
+        /// </summary>
+        public static void SeppukuCut(Pawn pawn, ThingWithComps weapon)
+        {
+            if (pawn.Spawned)
+                for (int i = 0; i < 3; i++) pawn.health.DropBloodFilth();
+
+            foreach (BodyPartRecord part in pawn.health.hediffSet.GetNotMissingParts()
+                         .Where(p => p.def.defName == "Liver" || p.def.defName == "Kidney").ToList())
+            {
+                CutPart(pawn, weapon, part, 0.8f);
+            }
+            for (int i = 0; i < 3; i++) CutPart(pawn, weapon, pawn.RaceProps.body.corePart, 0.2f);
+
+            if (!pawn.Dead)
+                Messages.Message("EndIt_Seppuku".Translate(pawn.LabelShort), pawn, MessageTypeDefOf.NegativeHealthEvent);
+        }
+
+        /// <summary>Cuts a fraction of the part's max health, always leaving it a couple of hit points.</summary>
+        private static void CutPart(Pawn pawn, ThingWithComps weapon, BodyPartRecord part, float fraction)
+        {
+            if (pawn.Dead || part == null) return;
+            float amount = Mathf.Min(MaxHp(pawn, part) * fraction, pawn.health.hediffSet.GetPartHealth(part) - 2f);
+            if (amount >= 1f) Hit(pawn, EndItDefOf.EndIt_Seppuku, amount, part, weapon);
+        }
+
         /// <summary>Gunshot replacement for vanilla's throat-cut execution.</summary>
         public static void ExecuteByGunshot(Pawn executioner, Pawn victim, ThingWithComps weapon)
         {

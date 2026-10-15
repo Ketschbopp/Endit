@@ -11,7 +11,8 @@ namespace EndIt
         None,
         Pistol,
         Rifle,
-        Blade
+        Blade,
+        Sword
     }
 
     public enum WeaponSource
@@ -31,6 +32,9 @@ namespace EndIt
 
         private static readonly string[] PistolWords = { "pistol", "revolver", "handgun", "derringer" };
 
+        private static readonly string[] SwordWords =
+            { "sword", "katana", "wakizashi", "tanto", "gladius", "zweihander", "saber", "sabre", "rapier", "scimitar", "cutlass" };
+
         public static WeaponStyle Classify(Thing thing)
         {
             if (thing == null) return WeaponStyle.None;
@@ -46,7 +50,7 @@ namespace EndIt
 
             if (def.IsMeleeWeapon && def.tools != null && def.tools.Any(t => t.capacities != null &&
                     t.capacities.Any(c => c.defName == "Cut" || c.defName == "Stab")))
-                return WeaponStyle.Blade;
+                return IsSword(def) ? WeaponStyle.Sword : WeaponStyle.Blade;
 
             return WeaponStyle.None;
         }
@@ -67,6 +71,12 @@ namespace EndIt
             string name = (def.defName + " " + def.label).ToLowerInvariant();
             if (PistolWords.Any(name.Contains)) return true;
             return def.GetStatValueAbstract(StatDefOf.Mass) <= PistolMaxMass;
+        }
+
+        public static bool IsSword(ThingDef def)
+        {
+            string name = (def.defName + " " + def.label).ToLowerInvariant();
+            return SwordWords.Any(name.Contains);
         }
 
         public static VerbProperties PrimaryVerb(ThingDef def)
