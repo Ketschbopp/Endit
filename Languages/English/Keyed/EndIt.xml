@@ -43,7 +43,7 @@
   <EndIt_Torture_InspectPending>{0} is bringing {1} for {2}.</EndIt_Torture_InspectPending>
   <EndIt_Torture_Inspect>{0} is torturing {1} ({2}), {3} h left.</EndIt_Torture_Inspect>
   <EndIt_Torture_Title>Torture</EndIt_Torture_Title>
-  <EndIt_Torture_Prisoner>Prisoner</EndIt_Torture_Prisoner>
+  <EndIt_Torture_Prisoner>Prisoner / slave</EndIt_Torture_Prisoner>
   <EndIt_Torture_Torturer>Torturer</EndIt_Torture_Torturer>
   <EndIt_Torture_Resistance>resistance {0}</EndIt_Torture_Resistance>
   <EndIt_Torture_Method>Method</EndIt_Torture_Method>
@@ -53,7 +53,7 @@
   <EndIt_Torture_StopBeforeDeathDesc>The torturer holds back near the limits and stops the session if the prisoner gets close to death: heavy blood loss, near drowning, a failing heart, deep hypothermia or very poor health. Without this, the prisoner may die.</EndIt_Torture_StopBeforeDeathDesc>
   <EndIt_Torture_Begin>Begin</EndIt_Torture_Begin>
   <EndIt_Torture_None>(none)</EndIt_Torture_None>
-  <EndIt_Torture_PickPrisoner>Pick a prisoner.</EndIt_Torture_PickPrisoner>
+  <EndIt_Torture_PickPrisoner>Pick a prisoner or slave.</EndIt_Torture_PickPrisoner>
   <EndIt_Torture_PickTorturer>Pick a torturer who can do violence and use their hands.</EndIt_Torture_PickTorturer>
   <EndIt_Torture_NoPath>{0} can't reach the prisoner or the chair.</EndIt_Torture_NoPath>
   <EndIt_Torture_Reserved>Someone else is busy with the prisoner or the chair.</EndIt_Torture_Reserved>
@@ -95,7 +95,7 @@
   <EndIt_TortureReason_Intel>Get intel</EndIt_TortureReason_Intel>
   <EndIt_TortureReason_Intel_Desc>At the end, a chance they break and talk, based on the torturer's Social skill, how long it went on and the method. If they do, you get a real opportunity on the world map, such as an enemy camp or a hidden item stash. Each prisoner only talks once.</EndIt_TortureReason_Intel_Desc>
   <EndIt_TortureReason_BreakWill>Break their will</EndIt_TortureReason_BreakWill>
-  <EndIt_TortureReason_BreakWill_Desc>Grinds down their resistance and will twice as fast, making them much easier to recruit or enslave.</EndIt_TortureReason_BreakWill_Desc>
+  <EndIt_TortureReason_BreakWill_Desc>Grinds them down twice as fast: a prisoner's resistance and will drop, making them much easier to recruit or enslave; a slave's suppression rises.</EndIt_TortureReason_BreakWill_Desc>
   <EndIt_TortureReason_Fun>For fun</EndIt_TortureReason_Fun>
   <EndIt_TortureReason_Fun_Desc>No questions asked. Bloodlust pawns love it and get recreation from it; everyone else just feels worse.</EndIt_TortureReason_Fun_Desc>
 
@@ -136,4 +136,8 @@
   <EndIt_Brainwash_DoneText>The session on {0} is complete.\n\n{1}\n\nThey will be catatonic for about five hours.</EndIt_Brainwash_DoneText>
   <EndIt_Brainwash_DoneIdeo>Now follows {0}.</EndIt_Brainwash_DoneIdeo>
   <EndIt_Brainwash_DoneLoyalty>Their unwavering loyalty is broken; they can be recruited.</EndIt_Brainwash_DoneLoyalty>
+  <EndIt_Settings_TortureSlaves>Allow torturing slaves</EndIt_Settings_TortureSlaves>
+  <EndIt_Settings_TortureSlavesDesc>Slaves can be picked at the Bad Chair as well as prisoners. Torture raises a slave's suppression instead of lowering resistance.</EndIt_Settings_TortureSlavesDesc>
+  <EndIt_Settings_BrainwashSlaves>Allow brainwashing slaves</EndIt_Settings_BrainwashSlaves>
+  <EndIt_Settings_BrainwashSlavesDesc>Slaves can be picked at the brainwashing station as well as prisoners.</EndIt_Settings_BrainwashSlavesDesc>
 </LanguageData>

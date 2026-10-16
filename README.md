@@ -65,7 +65,7 @@ The name, label, weapon tags and CE ammo set are all checked.
 ### Torture (the Bad Chair)
 - **Research:** *Interrogation chair* (medieval, 500 points).
 - **Build:** the *Bad Chair* in the **Security** tab: 50 wood and 25 steel, construction skill 4. It's rotatable; the torturer works from the cell in front of it.
-- **Use:** select the chair and press **Torture...**. Pick the **prisoner**, the **torturer** (anyone who can do violence and use their hands), the **method**, the **reason**, the **duration** (1 to 8 hours) and whether to **stop before it kills them** (on by default).
+- **Use:** select the chair and press **Torture...**. Pick the **prisoner or slave** (slaves can be turned off with the "Allow torturing slaves" setting), the **torturer** (anyone who can do violence and use their hands), the **method**, the **reason**, the **duration** (1 to 8 hours) and whether to **stop before it kills them** (on by default).
 - The torturer carries the prisoner to the chair, straps them in, steps to the front and works on them in rounds (about every 4 seconds at normal speed) until the time is up. A progress bar shows how far along it is. **Stop torture** on the chair ends it early. Afterwards the torturer takes the prisoner back to their bed.
 
 **Methods**
@@ -92,7 +92,7 @@ Electric shock needs the Electricity research. Russian roulette needs the tortur
 
 **Afterwards**
 - The prisoner gets *torture trauma* (consciousness down a little, phantom pain at higher severity), which fades over about three weeks, and a "I was tortured" memory (-25 mood).
-- Their resistance and will drop, more the longer it went on.
+- A prisoner's resistance and will drop, more the longer it went on; a slave's suppression rises instead.
 - The torturer feels bad about it (-8), unless they're a psychopath. Bloodlust pawns enjoy it (+6, or +10 for fun).
 - Other colonists get "prisoner tortured" (-3), except psychopaths and bloodlust pawns.
 - A non-hostile prisoner's faction loses 15 goodwill.
@@ -114,7 +114,7 @@ Both chances can be changed in the mod settings. Prisoners and slaves can have t
 ### Brainwashing station
 - **Research:** *Mind conditioning* (industrial, 1200 points).
 - **Build:** the *brainwashing station* in the **Security** tab: 60 steel, 4 components and 20 cloth, construction skill 6. It needs **250 W of power**. It's 1x2: a strap chair with a head clamp facing an old television. Rotation is the way the subject faces; facing north, you see the hypnotic spiral spinning on the screen during a session.
-- **Use:** select it and press **Brainwash...**. Pick the **subject** (a prisoner or slave), the colonist who **straps them in**, and the **goals**:
+- **Use:** select it and press **Brainwash...**. Pick the **subject** (a prisoner or slave; slaves can be turned off with the "Allow brainwashing slaves" setting), the colonist who **straps them in**, and the **goals**:
   - **Convert to an ideoligion** of your choice (any on the map; needs Ideology, not classic mode). Their certainty is set high.
   - **Break their unwavering loyalty**, for prisoners who have it, so they can be recruited.
 - The colonist carries them over, straps them in and switches it on. The session runs for **4 hours of powered time** (it pauses without power). **Stop brainwashing** releases them with nothing changed.

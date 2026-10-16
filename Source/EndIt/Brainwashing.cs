@@ -220,7 +220,8 @@ namespace EndIt
             this.FailOnDestroyedOrNull(TargetIndex.B);
             this.FailOnAggroMentalState(TargetIndex.A);
             this.FailOn(() => Comp?.session == null || Comp.session.subject != Subject);
-            this.FailOn(() => !Subject.IsPrisonerOfColony && !Subject.IsSlaveOfColony);
+            this.FailOn(() => !Subject.IsPrisonerOfColony
+                              && !(Subject.IsSlaveOfColony && EndItMod.Settings.brainwashSlaves));
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.ClosestTouch).FailOnDespawnedOrNull(TargetIndex.A);
 

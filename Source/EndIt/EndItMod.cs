@@ -13,6 +13,8 @@ namespace EndIt
         public bool requireInjury = false;
         public bool confirm = true;
         public bool gunExecutions = true;
+        public bool tortureSlaves = true;
+        public bool brainwashSlaves = true;
         public int executionAimTicks = 75;
         public float suicideChanceRjw = 0.10f;
         public float suicideChanceBrainwash = 0.10f;
@@ -36,6 +38,8 @@ namespace EndIt
             Scribe_Values.Look(ref requireInjury, "requireInjury", false);
             Scribe_Values.Look(ref confirm, "confirm", true);
             Scribe_Values.Look(ref gunExecutions, "gunExecutions", true);
+            Scribe_Values.Look(ref tortureSlaves, "tortureSlaves", true);
+            Scribe_Values.Look(ref brainwashSlaves, "brainwashSlaves", true);
             Scribe_Values.Look(ref executionAimTicks, "executionAimTicks", 75);
             Scribe_Values.Look(ref suicideChanceRjw, "suicideChanceRjw", 0.10f);
             Scribe_Values.Look(ref suicideChanceBrainwash, "suicideChanceBrainwash", 0.10f);
@@ -72,6 +76,10 @@ namespace EndIt
 
             list.GapLine();
             list.CheckboxLabeled("EndIt_Settings_GunExecutions".Translate(), ref Settings.gunExecutions);
+            list.CheckboxLabeled("EndIt_Settings_TortureSlaves".Translate(), ref Settings.tortureSlaves,
+                "EndIt_Settings_TortureSlavesDesc".Translate());
+            list.CheckboxLabeled("EndIt_Settings_BrainwashSlaves".Translate(), ref Settings.brainwashSlaves,
+                "EndIt_Settings_BrainwashSlavesDesc".Translate());
             list.Label("EndIt_Settings_ExecutionAim".Translate((Settings.executionAimTicks / 60f).ToString("0.0")));
             Settings.executionAimTicks = Mathf.RoundToInt(list.Slider(Settings.executionAimTicks, 0f, 240f));
 
