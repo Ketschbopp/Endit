@@ -9,7 +9,8 @@ namespace EndIt
     public static class EndItWounds
     {
         /// <summary>The pawn turns the weapon on themselves. Always severe, fatal per the settings' death chance.</summary>
-        public static void SelfInflict(Pawn pawn, ThingWithComps weapon, WeaponStyle style, Vector3 muzzle)
+        public static void SelfInflict(Pawn pawn, ThingWithComps weapon, WeaponStyle style, Vector3 muzzle,
+            string survivedKey = "EndIt_Survived")
         {
             Map map = pawn.Map;
             bool lethal = Rand.Chance(EndItMod.Settings.DeathChanceFor(style));
@@ -31,7 +32,19 @@ namespace EndIt
                 GunWound(pawn, weapon, lethal);
 
             if (!pawn.Dead)
-                Messages.Message("EndIt_Survived".Translate(pawn.LabelShort), pawn, MessageTypeDefOf.NegativeHealthEvent);
+                Messages.Message(survivedKey.Translate(pawn.LabelShort), pawn, MessageTypeDefOf.NegativeHealthEvent);
+        }
+
+        /// <summary>
+        /// Russian roulette at the Bad Chair: the torturer's revolver goes off against the prisoner's temple.
+        /// Same wound and pistol death chance as a pistol End it; the shot comes from the torturer.
+        /// </summary>
+        public static void ShotAtTemple(Pawn victim, ThingWithComps weapon, Pawn shooter, Vector3 muzzle)
+        {
+            bool lethal = Rand.Chance(EndItMod.Settings.DeathChanceFor(WeaponStyle.Pistol));
+            PlayShot(weapon, shooter, muzzle);
+            for (int i = 0; i < 3; i++) victim.health.DropBloodFilth();
+            GunWound(victim, weapon, lethal);
         }
 
         private static void GunWound(Pawn pawn, ThingWithComps weapon, bool lethal)

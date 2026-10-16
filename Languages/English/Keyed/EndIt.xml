@@ -82,6 +82,14 @@
   <EndIt_TortureMethod_FootWhipping_Desc>A cane across the soles of the feet. Very painful, little lasting damage beyond bruised feet.</EndIt_TortureMethod_FootWhipping_Desc>
   <EndIt_TortureMethod_IceWater>Ice water</EndIt_TortureMethod_IceWater>
   <EndIt_TortureMethod_IceWater_Desc>Bucket after bucket of freezing water. Causes hypothermia, which fades once they're warm again.</EndIt_TortureMethod_IceWater_Desc>
+  <EndIt_TortureMethod_RussianRoulette>Russian roulette</EndIt_TortureMethod_RussianRoulette>
+  <EndIt_TortureMethod_RussianRoulette_Desc>One bullet in the torturer's revolver, the cylinder spun once. The torturer holds it to the prisoner's head and pulls, then to their own, taking turns until the bullet comes up, at most six pulls. Whoever it hits takes a shot to the head. The torturer needs a revolver or magnum pistol. Best of all for intel.</EndIt_TortureMethod_RussianRoulette_Desc>
+  <EndIt_TortureMethod_NeedsRevolver>{0} needs a revolver</EndIt_TortureMethod_NeedsRevolver>
+  <EndIt_TortureRoulette_Note>Russian roulette ignores the duration and the safety: it goes on until the bullet fires, and it can hit the torturer.</EndIt_TortureRoulette_Note>
+  <EndIt_TortureRoulette_PrisonerShot>The revolver went off against {0}'s head. They're still alive.</EndIt_TortureRoulette_PrisonerShot>
+  <EndIt_TortureRoulette_PrisonerDied>The revolver went off against {0}'s head.</EndIt_TortureRoulette_PrisonerDied>
+  <EndIt_TortureRoulette_TorturerSurvived>{0} lost at their own game of Russian roulette, and survived the shot.</EndIt_TortureRoulette_TorturerSurvived>
+  <EndIt_TortureRoulette_TorturerDied>{0} lost at their own game of Russian roulette.</EndIt_TortureRoulette_TorturerDied>
   <EndIt_TortureMethod_NeedsResearch>needs {0}</EndIt_TortureMethod_NeedsResearch>
 
   <EndIt_TortureReason_Intel>Get intel</EndIt_TortureReason_Intel>

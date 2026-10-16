@@ -17,7 +17,8 @@ namespace EndIt
         Thumbscrews,
         Cutting,
         FootWhipping,
-        IceWater
+        IceWater,
+        RussianRoulette
     }
 
     public enum TortureReason
@@ -46,6 +47,11 @@ namespace EndIt
         /// <summary>Waterboarding / ice water: whether this round pours (skipped while the prisoner is near the limit).</summary>
         public bool pourThisRound;
 
+        /// <summary>Russian roulette: the chamber (0-5) the bullet is in, the next pull, and whether it has fired.</summary>
+        public int rouletteBullet = -1;
+        public int roulettePull;
+        public bool rouletteDone;
+
         public bool Started => startTick >= 0;
         public int DurationTicks => hours * GenDate.TicksPerHour;
         public int TicksDone => Started ? Find.TickManager.TicksGame - startTick : 0;
@@ -61,6 +67,9 @@ namespace EndIt
             Scribe_Values.Look(ref startTick, "startTick", -1);
             Scribe_Values.Look(ref lastStrikeTick, "lastStrikeTick", -99999);
             Scribe_Values.Look(ref pourThisRound, "pourThisRound");
+            Scribe_Values.Look(ref rouletteBullet, "rouletteBullet", -1);
+            Scribe_Values.Look(ref roulettePull, "roulettePull");
+            Scribe_Values.Look(ref rouletteDone, "rouletteDone");
         }
     }
 
@@ -169,15 +178,22 @@ namespace EndIt
         public static readonly TortureMethod[] All =
         {
             TortureMethod.Beating, TortureMethod.Waterboarding, TortureMethod.Branding, TortureMethod.ElectricShock,
-            TortureMethod.Thumbscrews, TortureMethod.Cutting, TortureMethod.FootWhipping, TortureMethod.IceWater
+            TortureMethod.Thumbscrews, TortureMethod.Cutting, TortureMethod.FootWhipping, TortureMethod.IceWater,
+            TortureMethod.RussianRoulette
         };
+
+        /// <summary>Russian roulette: chambers in the cylinder, and when the cylinder is spun in the first round.</summary>
+        public const int RouletteChambers = 6;
+        public const int RouletteSpinTicks = 60;
 
         public static string Label(TortureMethod m) => ("EndIt_TortureMethod_" + m).Translate();
         public static string Description(TortureMethod m) => ("EndIt_TortureMethod_" + m + "_Desc").Translate();
 
-        public static bool Available(TortureMethod m, out string reason)
+        public static bool Available(TortureMethod m, Pawn torturer, out string reason)
         {
             reason = null;
+            if (m == TortureMethod.RussianRoulette && (torturer == null || WeaponUtil.FindRevolver(torturer) == null))
+                reason = "EndIt_TortureMethod_NeedsRevolver".Translate(torturer?.LabelShort ?? "torturer");
             if (m == TortureMethod.ElectricShock)
             {
                 ResearchProjectDef electricity = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("Electricity");
@@ -192,6 +208,7 @@ namespace EndIt
         {
             switch (m)
             {
+                case TortureMethod.RussianRoulette: return 1.4f;
                 case TortureMethod.Waterboarding: return 1.3f;
                 case TortureMethod.ElectricShock: return 1.2f;
                 case TortureMethod.Thumbscrews: return 1.15f;
@@ -223,6 +240,12 @@ namespace EndIt
             Map map = victim.Map;
             int now = Find.TickManager.TicksGame;
             bool careful = s.stopBeforeDeath;
+
+            if (s.method == TortureMethod.RussianRoulette)
+            {
+                RouletteTick(s, torturer, victim, phase, now);
+                return;
+            }
 
             if (s.method == TortureMethod.Waterboarding || s.method == TortureMethod.IceWater)
             {
@@ -297,6 +320,48 @@ namespace EndIt
         }
 
         /// <summary>
+        /// One bullet, one spin, then alternate pulls: the prisoner first (the torturer holds it to their head), then
+        /// the torturer's own temple, and so on, until the bullet comes up. Whoever it hits takes a pistol shot to the
+        /// head (pistol death chance); the session ends there.
+        /// </summary>
+        private static void RouletteTick(TortureSession s, Pawn torturer, Pawn victim, int phase, int now)
+        {
+            if (s.rouletteBullet < 0) s.rouletteBullet = Rand.Range(0, RouletteChambers);
+            if (s.rouletteDone || phase != StrikePhase) return;
+
+            Map map = victim.Map;
+            bool prisonersTurn = s.roulettePull % 2 == 0;
+            Pawn target = prisonersTurn ? victim : torturer;
+            ThingWithComps gun = torturer.equipment?.Primary;
+            if (prisonersTurn) s.lastStrikeTick = now;
+
+            if (s.roulettePull == s.rouletteBullet && gun != null)
+            {
+                s.rouletteDone = true;
+                s.roulettePull++;
+                Vector3 muzzle = TortureDraw.HeadPos(target);
+                if (prisonersTurn)
+                {
+                    EndItWounds.ShotAtTemple(victim, gun, torturer, muzzle);
+                    Messages.Message((victim.Dead ? "EndIt_TortureRoulette_PrisonerDied" : "EndIt_TortureRoulette_PrisonerShot")
+                        .Translate(victim.LabelShort), victim, MessageTypeDefOf.NegativeHealthEvent);
+                }
+                else
+                {
+                    EndItWounds.SelfInflict(torturer, gun, WeaponStyle.Pistol, muzzle, "EndIt_TortureRoulette_TorturerSurvived");
+                    if (torturer.Dead)
+                        Messages.Message("EndIt_TortureRoulette_TorturerDied".Translate(torturer.LabelShort), victim,
+                            MessageTypeDefOf.NegativeHealthEvent);
+                }
+                return;
+            }
+
+            s.roulettePull++;
+            SoundDefOf.Click.PlayOneShot(new TargetInfo(target.Position, map));
+            MoteMaker.ThrowText(TortureDraw.HeadPos(target) + new Vector3(0f, 0f, 0.4f), map, "EndIt_RouletteClick".Translate(), 2.5f);
+        }
+
+        /// <summary>
         /// One injury on a random part with one of the given defNames. With the safety on, never takes the head,
         /// neck or torso low enough to kill.
         /// </summary>
@@ -351,7 +416,7 @@ namespace EndIt
             if (faction != null && faction != Faction.OfPlayer && !faction.HostileTo(Faction.OfPlayer))
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, -15, true, true, null, victim);
 
-            if (s.reason == TortureReason.Intel) TryGetIntel(s, torturer, victim, hours);
+            if (s.reason == TortureReason.Intel && !torturer.Dead) TryGetIntel(s, torturer, victim, hours);
             else
                 Messages.Message("EndIt_Torture_Done".Translate(torturer.LabelShort, victim.LabelShort), victim,
                     MessageTypeDefOf.NeutralEvent);
@@ -359,7 +424,7 @@ namespace EndIt
 
         private static void TorturerThoughts(TortureSession s, Pawn torturer)
         {
-            if (torturer?.story?.traits == null) return;
+            if (torturer == null || torturer.Dead || torturer.story?.traits == null) return;
             var memories = torturer.needs?.mood?.thoughts?.memories;
             bool enjoys = torturer.story.traits.HasTrait(TraitDefOf.Bloodlust);
             if (enjoys)
@@ -473,6 +538,7 @@ namespace EndIt
                 float reach = s.method == TortureMethod.Beating ? 0.2f
                     : s.method == TortureMethod.FootWhipping || s.method == TortureMethod.Cutting ? 0.12f : 0.07f;
                 if (s.method == TortureMethod.Waterboarding || s.method == TortureMethod.IceWater) reach = 0.05f;
+                if (s.method == TortureMethod.RussianRoulette) reach = 0f;
                 float bell = Mathf.Clamp01(1f - Mathf.Abs(phase - TortureMethods.StrikePhase) / 15f);
                 Vector3 dir = Prisoner.DrawPos - pawn.Position.ToVector3Shifted();
                 dir.y = 0f;
@@ -518,14 +584,25 @@ namespace EndIt
             yield return Toils_Goto.GotoCell(Chair.InteractionCell, PathEndMode.OnCell);
 
             Toil torture = ToilMaker.MakeToil("EndIt_Torture");
-            torture.initAction = () => Session.startTick = Find.TickManager.TicksGame;
+            torture.initAction = () =>
+            {
+                if (Session.method == TortureMethod.RussianRoulette
+                    && !WeaponUtil.EquipFromInventory(pawn, WeaponUtil.FindRevolver(pawn)))
+                {
+                    EndJobWith(JobCondition.Incompletable);
+                    return;
+                }
+                Session.startTick = Find.TickManager.TicksGame;
+            };
             torture.tickAction = TortureTick;
             torture.handlingFacing = true;
             torture.defaultCompleteMode = ToilCompleteMode.Never;
             torture.WithProgressBar(TargetIndex.A, () =>
             {
                 TortureSession s = Session;
-                return s == null ? 0f : Mathf.Clamp01(s.TicksDone / (float)s.DurationTicks);
+                if (s == null) return 0f;
+                if (s.method == TortureMethod.RussianRoulette) return s.roulettePull / (float)TortureMethods.RouletteChambers;
+                return Mathf.Clamp01(s.TicksDone / (float)s.DurationTicks);
             });
             yield return torture;
         }
@@ -553,14 +630,18 @@ namespace EndIt
                 StartPrisonerJob();
 
             int ticks = s.TicksDone;
-            TortureMethods.Tick(s, pawn, victim, ticks % TortureMethods.RoundTicks);
+            int phase = ticks % TortureMethods.RoundTicks;
+            TortureMethods.Tick(s, pawn, victim, phase);
+            if (ended || pawn.Dead || pawn.Downed) return;
 
-            if (victim.Dead || ticks >= s.DurationTicks)
+            bool rouletteOver = s.method == TortureMethod.RussianRoulette
+                                && s.rouletteDone && phase >= TortureMethods.StrikePhase + 60;
+            if (victim.Dead || rouletteOver || s.method != TortureMethod.RussianRoulette && ticks >= s.DurationTicks)
             {
                 EndJobWith(JobCondition.Succeeded);
                 return;
             }
-            if (s.stopBeforeDeath && TortureMethods.InDanger(victim))
+            if (s.stopBeforeDeath && s.method != TortureMethod.RussianRoulette && TortureMethods.InDanger(victim))
             {
                 Messages.Message("EndIt_Torture_StoppedDanger".Translate(pawn.LabelShort, victim.LabelShort), victim,
                     MessageTypeDefOf.CautionInput);
@@ -734,6 +815,9 @@ namespace EndIt
 
             switch (s.method)
             {
+                case TortureMethod.RussianRoulette:
+                    DrawRoulette(s, torturer, victim, drawLoc, grip, dir, aim, phase, y);
+                    break;
                 case TortureMethod.Waterboarding:
                     DrawTool("Cloth", head, 0f, 0.42f, y);
                     DrawBucket(s, phase, grip, head, aim, y);
@@ -771,6 +855,87 @@ namespace EndIt
                     DrawTool("Cane", grip + caneDir * len * 0.5f, caneAngle, len, y);
                     break;
             }
+        }
+
+        /// <summary>
+        /// The torturer's revolver: spun at the chest in the first round, then raised to the prisoner's temple (their
+        /// turns) or the torturer's own (the torturer's turns), held trembling, the trigger pulled; recoil if it fired,
+        /// a flinch if it clicked, then lowered for the next turn.
+        /// </summary>
+        private static void DrawRoulette(TortureSession s, Pawn torturer, Pawn victim, Vector3 drawLoc, Vector3 grip,
+            Vector3 dir, float aim, int phase, float y)
+        {
+            ThingWithComps gun = torturer.equipment?.Primary;
+            if (gun == null) return;
+            int round = s.TicksDone / TortureMethods.RoundTicks;
+            bool prisonersTurn = round % 2 == 0;
+            bool firedThisRound = s.rouletteDone && round == s.rouletteBullet;
+            if (s.rouletteDone && round > s.rouletteBullet) return;
+
+            Vector3 aimPos;
+            float aimAngle;
+            if (prisonersTurn)
+            {
+                Vector3 head = HeadPos(victim);
+                aimPos = head - dir * 0.32f;
+                aimAngle = aim;
+            }
+            else
+            {
+                Vector3 head = HeadPos(torturer);
+                Vector3 right = torturer.Rotation.RighthandCell.ToVector3();
+                aimPos = head + right * 0.3f;
+                Vector3 toHead = head - aimPos;
+                aimAngle = toHead.AngleFlat();
+            }
+
+            int raiseStart = round == 0 ? TortureMethods.RouletteSpinTicks : 0;
+            const int raiseEnd = 110;
+            float n = Find.TickManager.TicksGame + torturer.thingIDNumber % 97;
+            Vector3 pos;
+            float angle;
+            if (phase < raiseStart)
+            {
+                // Spinning the cylinder, held at the chest.
+                pos = grip + new Vector3(0f, 0f, 0.08f);
+                angle = aim + 90f + (phase > 15 && phase < 45 ? Mathf.Sin(phase * 1.7f) * 8f : 0f);
+            }
+            else if (phase < raiseEnd)
+            {
+                float t = Smooth((phase - raiseStart) / (float)(raiseEnd - raiseStart));
+                pos = Vector3.Lerp(grip, aimPos, t);
+                angle = Mathf.LerpAngle(aim + 90f, aimAngle, t);
+            }
+            else if (phase < TortureMethods.StrikePhase)
+            {
+                float amp = 0.008f + 0.012f * (phase - raiseEnd) / (TortureMethods.StrikePhase - raiseEnd);
+                pos = aimPos + new Vector3(Mathf.Sin(n * 0.91f) * amp, 0f, Mathf.Cos(n * 1.37f) * amp);
+                angle = aimAngle + Mathf.Sin(n * 1.13f) * 2f;
+            }
+            else
+            {
+                int after = phase - TortureMethods.StrikePhase;
+                Vector3 kicked = aimPos - (aimPos - grip).normalized * 0.15f + new Vector3(0f, 0f, 0.08f);
+                if (firedThisRound && after < 6)
+                {
+                    pos = Vector3.Lerp(aimPos, kicked, Smooth(after / 6f));
+                    angle = aimAngle + 30f * Smooth(after / 6f);
+                }
+                else if (after < 25)
+                {
+                    pos = firedThisRound ? kicked : aimPos;
+                    angle = aimAngle + (firedThisRound ? 30f : 8f * Bell(after, 3, 4));
+                }
+                else
+                {
+                    float t = Smooth((after - 25) / 50f);
+                    pos = Vector3.Lerp(firedThisRound ? kicked : aimPos, grip, t);
+                    angle = Mathf.LerpAngle(aimAngle, aim + 90f, t);
+                }
+            }
+
+            pos.y = y;
+            PawnRenderUtility.DrawEquipmentAiming(gun, pos, GenMath.PositiveMod(angle, 360f));
         }
 
         private static void DrawBucket(TortureSession s, int phase, Vector3 grip, Vector3 head, float aim, float y)

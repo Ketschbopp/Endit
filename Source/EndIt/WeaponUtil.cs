@@ -169,6 +169,25 @@ namespace EndIt
                 && EquipmentUtility.CanEquip(t, pawn)) as ThingWithComps;
         }
 
+        /// <summary>Equips a weapon from the pawn's inventory, putting whatever they held into their inventory.</summary>
+        public static bool EquipFromInventory(Pawn pawn, ThingWithComps weapon)
+        {
+            if (weapon == null || weapon.Destroyed) return false;
+            if (pawn.equipment.Primary == weapon) return true;
+            if (pawn.inventory == null || !pawn.inventory.innerContainer.Contains(weapon)) return false;
+
+            ThingWithComps toEquip = weapon.stackCount > 1 ? (ThingWithComps)weapon.SplitOff(1) : weapon;
+            toEquip.holdingOwner?.Remove(toEquip);
+            ThingWithComps old = pawn.equipment.Primary;
+            if (old != null)
+            {
+                pawn.equipment.Remove(old);
+                if (!pawn.inventory.innerContainer.TryAdd(old)) GenPlace.TryPlaceThing(old, pawn.Position, pawn.Map, ThingPlaceMode.Near);
+            }
+            pawn.equipment.AddEquipment(toEquip);
+            return true;
+        }
+
         public static VerbProperties PrimaryVerb(ThingDef def)
         {
             List<VerbProperties> verbs = def?.Verbs;
