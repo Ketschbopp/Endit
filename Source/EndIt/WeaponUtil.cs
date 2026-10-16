@@ -142,14 +142,20 @@ namespace EndIt
                    || def.GetStatValueAbstract(StatDefOf.Mass) <= HandgunMaxMass;
         }
 
-        /// <summary>Combat Extended: the gun's ammo set (e.g. AmmoSet_44Magnum), read without referencing CE.</summary>
+        /// <summary>
+        /// Combat Extended: the gun's ammo set (e.g. AmmoSet_44Magnum), read without referencing CE. CE's generic
+        /// ammo option keeps that set's defName and links it to a generic one through "similarTo", so both names are
+        /// returned.
+        /// </summary>
         private static string AmmoSetName(ThingDef def)
         {
             if (def.comps == null) return "";
             foreach (CompProperties props in def.comps)
             {
                 System.Reflection.FieldInfo field = props.GetType().GetField("ammoSet");
-                if (field?.GetValue(props) is Def ammoSet) return ammoSet.defName;
+                if (field?.GetValue(props) is not Def ammoSet) continue;
+                Def similar = ammoSet.GetType().GetField("similarTo")?.GetValue(ammoSet) as Def;
+                return ammoSet.defName + " " + similar?.defName;
             }
             return "";
         }
