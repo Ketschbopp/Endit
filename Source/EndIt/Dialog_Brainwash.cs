@@ -39,7 +39,7 @@ namespace EndIt
         private IEnumerable<Pawn> Subjects()
         {
             return Map.mapPawns.AllPawnsSpawned
-                .Where(p => !p.Dead && p.RaceProps.Humanlike && (p.IsPrisonerOfColony || p.IsSlaveOfColony)
+                .Where(p => !p.Dead && p.RaceProps.Humanlike && (p.IsPrisonerOfColony || p.IsSlaveOfColony && EndItMod.Settings.brainwashSlaves)
                             && !CompBrainwasher.IsInSession(p) && !CompTortureChair.IsBeingTortured(p));
         }
 

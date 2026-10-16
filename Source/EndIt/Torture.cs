@@ -404,10 +404,15 @@ namespace EndIt
             HealthUtility.AdjustSeverity(victim, EndItDefOf.EndIt_TortureTrauma, Mathf.Clamp(0.2f + 0.15f * hours, 0.25f, 1f));
             victim.needs?.mood?.thoughts?.memories?.TryGainMemory(EndItDefOf.EndIt_WasTortured, torturer);
 
-            // Broken down: easier to recruit or enslave.
-            if (victim.guest != null)
+            // Broken down: prisoners get easier to recruit or enslave; slaves get more suppressed.
+            float factor = s.reason == TortureReason.BreakWill ? 2f : 1f;
+            if (victim.IsSlaveOfColony)
             {
-                float factor = s.reason == TortureReason.BreakWill ? 2f : 1f;
+                Need_Suppression suppression = victim.needs?.TryGetNeed<Need_Suppression>();
+                if (suppression != null) suppression.CurLevel = Mathf.Min(1f, suppression.CurLevel + 0.15f * hours * factor);
+            }
+            else if (victim.guest != null)
+            {
                 victim.guest.resistance = Mathf.Max(0f, victim.guest.resistance - 2.5f * hours * factor);
                 victim.guest.will = Mathf.Max(0f, victim.guest.will - 0.12f * hours * factor);
             }
@@ -552,7 +557,8 @@ namespace EndIt
             this.FailOnDestroyedOrNull(TargetIndex.B);
             this.FailOnAggroMentalState(TargetIndex.A);
             this.FailOn(() => Session == null || Session.torturer != pawn || Session.prisoner != Prisoner);
-            this.FailOn(() => !placed && !Prisoner.IsPrisonerOfColony);
+            this.FailOn(() => !placed && !Prisoner.IsPrisonerOfColony
+                                         && !(Prisoner.IsSlaveOfColony && EndItMod.Settings.tortureSlaves));
             AddFinishAction(_ => Finish());
 
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.ClosestTouch).FailOnDespawnedOrNull(TargetIndex.A);

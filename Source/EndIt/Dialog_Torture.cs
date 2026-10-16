@@ -35,7 +35,10 @@ namespace EndIt
 
         private IEnumerable<Pawn> Prisoners()
         {
-            return Map.mapPawns.PrisonersOfColonySpawned.Where(p => !p.Dead && !CompTortureChair.IsBeingTortured(p));
+            return Map.mapPawns.AllPawnsSpawned.Where(p => !p.Dead && p.RaceProps.Humanlike
+                                                           && (p.IsPrisonerOfColony || p.IsSlaveOfColony && EndItMod.Settings.tortureSlaves)
+                                                           && !CompTortureChair.IsBeingTortured(p)
+                                                           && !CompBrainwasher.IsInSession(p));
         }
 
         private IEnumerable<Pawn> Torturers()
@@ -56,7 +59,9 @@ namespace EndIt
             list.GapLine();
 
             PawnPicker(list, "EndIt_Torture_Prisoner".Translate(), prisoner, Prisoners(), p => prisoner = p,
-                p => p.LabelShort + " (" + "EndIt_Torture_Resistance".Translate(p.guest?.resistance.ToString("0.0") ?? "-") + ")");
+                p => p.LabelShort + " (" + (p.IsSlaveOfColony
+                    ? "EndIt_Brainwash_Slave".Translate().ToString()
+                    : "EndIt_Torture_Resistance".Translate(p.guest?.resistance.ToString("0.0") ?? "-").ToString()) + ")");
             PawnPicker(list, "EndIt_Torture_Torturer".Translate(), torturer, Torturers(), p => torturer = p,
                 p => p.LabelShort + " (" + SkillDefOf.Social.LabelCap + " " + (p.skills?.GetSkill(SkillDefOf.Social)?.Level ?? 0) + ")"
                      + (p.story?.traits?.HasTrait(TraitDefOf.Bloodlust) == true ? ", " + TraitDefOf.Bloodlust.degreeDatas[0].label : ""));
