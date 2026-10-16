@@ -41,7 +41,12 @@ Select a colonist with a gun or blade and right-click a **downed friendly pawn**
 - If the pawn gets back on their feet, or stops suffering (pain drops below medium, and they aren't unconscious and bleeding), before the kill, the order is called off.
 
 ### Russian roulette (mental break)
-An extreme mental break that can only happen to a pawn carrying a **revolver**, either equipped or in their inventory. Any gun with "revolver" in its name counts.
+An extreme mental break that can only happen to a pawn carrying a **revolver or magnum pistol**, either equipped or in their inventory. Vanilla and modded guns both count (Combat Extended, Ancient Urban Ruins, weapon packs...):
+- anything named like a revolver: revolver, six-shooter, Peacemaker, single action, Python, Anaconda, Nagant, Webley, Mateba, Rhino, Raging Bull, Judge, Smith & Wesson;
+- a **handgun** named like a magnum: magnum, Desert Eagle, .357, .44, .454 Casull, .500 S&W, .45 Colt, .38 Special. Magnum *rifles* (like .338 Lapua Magnum) don't count;
+- with Combat Extended, a handgun firing revolver or magnum ammo (for example `AmmoSet_44Magnum`, `AmmoSet_357Magnum`, `AmmoSet_45Colt`), whatever it's called.
+
+The name, label, weapon tags and CE ammo set are all checked.
 - The pawn equips the revolver if it's in their inventory, and puts whatever they were holding into their inventory.
 - **One bullet, six chambers, one spin.** They spin the cylinder once at chest height, then pull the trigger three times in a row. Each round they raise the revolver to their temple, hesitate with trembling hands, and pull.
 - **Each pull is riskier than the last,** like the real thing: 1 in 6 on the first pull, 1 in 5 on the second, 1 in 4 on the third. That's a 50% chance the bullet comes up in the three pulls.

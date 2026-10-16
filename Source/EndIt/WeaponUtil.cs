@@ -94,12 +94,64 @@ namespace EndIt
             return SwordWords.Any(name.Contains);
         }
 
+        // Names that always mean a revolver.
+        private static readonly string[] RevolverWords =
+        {
+            "revolver", "six-shooter", "sixshooter", "six shooter", "sixgun", "six-gun", "peacemaker", "single action",
+            "singleaction", "python", "anaconda", "nagant", "webley", "mateba", "rhino", "raging bull", "ragingbull",
+            "judge", "smith & wesson", "smith and wesson", "smithwesson", "s&w"
+        };
+
+        // Magnum handguns and revolver cartridges; only count on a handgun (so magnum rifles are left out).
+        private static readonly string[] MagnumWords =
+        {
+            "magnum", "desert eagle", "deserteagle", "deagle", ".357", "357", ".44", "44mag", ".454", "454", "casull",
+            ".500", "500sw", "460sw", "45colt", "45 colt", ".45 colt", "38special", "38 special", ".38 special"
+        };
+
+        private static readonly string[] HandgunWords = { "pistol", "handgun", "sidearm", "revolver" };
+
+        private const float HandgunMaxMass = 2.6f;
+
+        private static readonly Dictionary<ThingDef, bool> revolverCache = new Dictionary<ThingDef, bool>();
+
+        /// <summary>
+        /// A revolver or magnum pistol, vanilla or modded: named like a revolver; or a handgun named like a magnum,
+        /// or (Combat Extended) firing revolver / magnum ammo.
+        /// </summary>
         public static bool IsRevolver(Thing thing)
         {
             if (thing == null) return false;
             WeaponStyle style = Classify(thing);
-            return (style == WeaponStyle.Pistol || style == WeaponStyle.Rifle)
-                   && (thing.def.defName + " " + thing.def.label).ToLowerInvariant().Contains("revolver");
+            if (style != WeaponStyle.Pistol && style != WeaponStyle.Rifle) return false;
+            if (!revolverCache.TryGetValue(thing.def, out bool result))
+            {
+                result = IsRevolverDef(thing.def, style);
+                revolverCache[thing.def] = result;
+            }
+            return result;
+        }
+
+        private static bool IsRevolverDef(ThingDef def, WeaponStyle style)
+        {
+            string tags = def.weaponTags != null ? string.Join(" ", def.weaponTags) : "";
+            string text = (def.defName + " " + def.label + " " + tags + " " + AmmoSetName(def)).ToLowerInvariant();
+            if (RevolverWords.Any(text.Contains)) return true;
+            if (!MagnumWords.Any(text.Contains)) return false;
+            return style == WeaponStyle.Pistol || HandgunWords.Any(tags.ToLowerInvariant().Contains)
+                   || def.GetStatValueAbstract(StatDefOf.Mass) <= HandgunMaxMass;
+        }
+
+        /// <summary>Combat Extended: the gun's ammo set (e.g. AmmoSet_44Magnum), read without referencing CE.</summary>
+        private static string AmmoSetName(ThingDef def)
+        {
+            if (def.comps == null) return "";
+            foreach (CompProperties props in def.comps)
+            {
+                System.Reflection.FieldInfo field = props.GetType().GetField("ammoSet");
+                if (field?.GetValue(props) is Def ammoSet) return ammoSet.defName;
+            }
+            return "";
         }
 
         /// <summary>The revolver the pawn holds, or else the first one in their inventory.</summary>
