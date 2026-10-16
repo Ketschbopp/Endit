@@ -41,7 +41,12 @@ Select a colonist with a gun or blade and right-click a **downed friendly pawn**
 - If the pawn gets back on their feet, or stops suffering (pain drops below medium, and they aren't unconscious and bleeding), before the kill, the order is called off.
 
 ### Russian roulette (mental break)
-An extreme mental break that can only happen to a pawn carrying a **revolver**, either equipped or in their inventory. Any gun with "revolver" in its name counts.
+An extreme mental break that can only happen to a pawn carrying a **revolver or magnum pistol**, either equipped or in their inventory. Vanilla and modded guns both count (Combat Extended, Ancient Urban Ruins, weapon packs...):
+- anything named like a revolver: revolver, six-shooter, Peacemaker, single action, Python, Anaconda, Nagant, Webley, Mateba, Rhino, Raging Bull, Judge, Smith & Wesson;
+- a **handgun** named like a magnum: magnum, Desert Eagle, .357, .44, .454 Casull, .500 S&W, .45 Colt, .38 Special. Magnum *rifles* (like .338 Lapua Magnum) don't count;
+- with Combat Extended, a handgun firing revolver or magnum ammo (for example `AmmoSet_44Magnum`, `AmmoSet_357Magnum`, `AmmoSet_45Colt`), whatever it's called.
+
+The name, label, weapon tags and CE ammo set are all checked.
 - The pawn equips the revolver if it's in their inventory, and puts whatever they were holding into their inventory.
 - **One bullet, six chambers, one spin.** They spin the cylinder once at chest height, then pull the trigger three times in a row. Each round they raise the revolver to their temple, hesitate with trembling hands, and pull.
 - **Each pull is riskier than the last,** like the real thing: 1 in 6 on the first pull, 1 in 5 on the second, 1 in 4 on the third. That's a 50% chance the bullet comes up in the three pulls.
@@ -76,7 +81,9 @@ An extreme mental break that can only happen to a pawn carrying a **revolver**, 
 | Foot whipping | Cane raised and whipped across the soles | Bruised feet | Heal |
 | Ice water | Buckets of water poured over; the prisoner shivers | Vanilla *hypothermia* | Fades once warm |
 
-Electric shock needs the Electricity research. Every method also adds *being tortured* (extra pain) while the session lasts.
+| Russian roulette | Revolver spun at the chest, then held to the prisoner's temple and to the torturer's own, turn by turn; *click*, flinch, or a muzzle flash | One bullet, one spin, alternating pulls (prisoner first) until it fires, at most six. Whoever it hits takes a pistol shot to the head (pistol death chance) | As for End it with a pistol |
+
+Electric shock needs the Electricity research. Russian roulette needs the torturer to have a revolver or magnum pistol (equipped or in their inventory; the same detection as the Russian roulette break). It ignores the duration and the "stop before it kills them" setting: it goes on until the bullet fires, and it can hit the torturer. It's the best method for intel. Every method also adds *being tortured* (extra pain) while the session lasts.
 
 **Reasons**
 - **Get intel:** at the end, a chance they break and talk (higher with the torturer's Social skill, more hours, and harsher methods; waterboarding is best). If they do, you get a real opportunity on the world map: an enemy camp or a hidden item stash. Each prisoner only talks once (*interrogated*).

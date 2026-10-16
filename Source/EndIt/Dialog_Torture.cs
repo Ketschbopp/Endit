@@ -65,7 +65,7 @@ namespace EndIt
             list.Label("EndIt_Torture_Method".Translate());
             foreach (TortureMethod m in TortureMethods.All)
             {
-                bool available = TortureMethods.Available(m, out string why);
+                bool available = TortureMethods.Available(m, torturer, out string why);
                 Rect row = list.GetRect(26f);
                 string label = TortureMethods.Label(m) + (available ? "" : " (" + why + ")");
                 if (Widgets.RadioButtonLabeled(row, label, method == m, !available) && available) method = m;
@@ -85,6 +85,13 @@ namespace EndIt
             {
                 GUI.color = ColorLibrary.RedReadable;
                 list.Label("EndIt_Torture_AlreadyTalked".Translate(prisoner.LabelShort));
+                GUI.color = Color.white;
+            }
+
+            if (method == TortureMethod.RussianRoulette)
+            {
+                GUI.color = new Color(1f, 0.85f, 0.5f);
+                list.Label("EndIt_TortureRoulette_Note".Translate());
                 GUI.color = Color.white;
             }
 
@@ -126,7 +133,7 @@ namespace EndIt
         {
             if (prisoner == null || !Prisoners().Contains(prisoner)) return "EndIt_Torture_PickPrisoner".Translate();
             if (torturer == null || !Torturers().Contains(torturer)) return "EndIt_Torture_PickTorturer".Translate();
-            if (!TortureMethods.Available(method, out string why)) return why;
+            if (!TortureMethods.Available(method, torturer, out string why)) return why;
             if (!torturer.CanReach(prisoner, PathEndMode.ClosestTouch, Danger.Deadly)
                 || !torturer.CanReach(chair.parent, PathEndMode.ClosestTouch, Danger.Deadly))
                 return "EndIt_Torture_NoPath".Translate(torturer.LabelShort);

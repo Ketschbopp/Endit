@@ -94,12 +94,70 @@ namespace EndIt
             return SwordWords.Any(name.Contains);
         }
 
+        // Names that always mean a revolver.
+        private static readonly string[] RevolverWords =
+        {
+            "revolver", "six-shooter", "sixshooter", "six shooter", "sixgun", "six-gun", "peacemaker", "single action",
+            "singleaction", "python", "anaconda", "nagant", "webley", "mateba", "rhino", "raging bull", "ragingbull",
+            "judge", "smith & wesson", "smith and wesson", "smithwesson", "s&w"
+        };
+
+        // Magnum handguns and revolver cartridges; only count on a handgun (so magnum rifles are left out).
+        private static readonly string[] MagnumWords =
+        {
+            "magnum", "desert eagle", "deserteagle", "deagle", ".357", "357", ".44", "44mag", ".454", "454", "casull",
+            ".500", "500sw", "460sw", "45colt", "45 colt", ".45 colt", "38special", "38 special", ".38 special"
+        };
+
+        private static readonly string[] HandgunWords = { "pistol", "handgun", "sidearm", "revolver" };
+
+        private const float HandgunMaxMass = 2.6f;
+
+        private static readonly Dictionary<ThingDef, bool> revolverCache = new Dictionary<ThingDef, bool>();
+
+        /// <summary>
+        /// A revolver or magnum pistol, vanilla or modded: named like a revolver; or a handgun named like a magnum,
+        /// or (Combat Extended) firing revolver / magnum ammo.
+        /// </summary>
         public static bool IsRevolver(Thing thing)
         {
             if (thing == null) return false;
             WeaponStyle style = Classify(thing);
-            return (style == WeaponStyle.Pistol || style == WeaponStyle.Rifle)
-                   && (thing.def.defName + " " + thing.def.label).ToLowerInvariant().Contains("revolver");
+            if (style != WeaponStyle.Pistol && style != WeaponStyle.Rifle) return false;
+            if (!revolverCache.TryGetValue(thing.def, out bool result))
+            {
+                result = IsRevolverDef(thing.def, style);
+                revolverCache[thing.def] = result;
+            }
+            return result;
+        }
+
+        private static bool IsRevolverDef(ThingDef def, WeaponStyle style)
+        {
+            string tags = def.weaponTags != null ? string.Join(" ", def.weaponTags) : "";
+            string text = (def.defName + " " + def.label + " " + tags + " " + AmmoSetName(def)).ToLowerInvariant();
+            if (RevolverWords.Any(text.Contains)) return true;
+            if (!MagnumWords.Any(text.Contains)) return false;
+            return style == WeaponStyle.Pistol || HandgunWords.Any(tags.ToLowerInvariant().Contains)
+                   || def.GetStatValueAbstract(StatDefOf.Mass) <= HandgunMaxMass;
+        }
+
+        /// <summary>
+        /// Combat Extended: the gun's ammo set (e.g. AmmoSet_44Magnum), read without referencing CE. CE's generic
+        /// ammo option keeps that set's defName and links it to a generic one through "similarTo", so both names are
+        /// returned.
+        /// </summary>
+        private static string AmmoSetName(ThingDef def)
+        {
+            if (def.comps == null) return "";
+            foreach (CompProperties props in def.comps)
+            {
+                System.Reflection.FieldInfo field = props.GetType().GetField("ammoSet");
+                if (field?.GetValue(props) is not Def ammoSet) continue;
+                Def similar = ammoSet.GetType().GetField("similarTo")?.GetValue(ammoSet) as Def;
+                return ammoSet.defName + " " + similar?.defName;
+            }
+            return "";
         }
 
         /// <summary>The revolver the pawn holds, or else the first one in their inventory.</summary>
@@ -109,6 +167,25 @@ namespace EndIt
             if (IsRevolver(primary) && EquipmentUtility.CanEquip(primary, pawn)) return primary;
             return pawn.inventory?.innerContainer.FirstOrDefault(t => IsRevolver(t) && t is ThingWithComps
                 && EquipmentUtility.CanEquip(t, pawn)) as ThingWithComps;
+        }
+
+        /// <summary>Equips a weapon from the pawn's inventory, putting whatever they held into their inventory.</summary>
+        public static bool EquipFromInventory(Pawn pawn, ThingWithComps weapon)
+        {
+            if (weapon == null || weapon.Destroyed) return false;
+            if (pawn.equipment.Primary == weapon) return true;
+            if (pawn.inventory == null || !pawn.inventory.innerContainer.Contains(weapon)) return false;
+
+            ThingWithComps toEquip = weapon.stackCount > 1 ? (ThingWithComps)weapon.SplitOff(1) : weapon;
+            toEquip.holdingOwner?.Remove(toEquip);
+            ThingWithComps old = pawn.equipment.Primary;
+            if (old != null)
+            {
+                pawn.equipment.Remove(old);
+                if (!pawn.inventory.innerContainer.TryAdd(old)) GenPlace.TryPlaceThing(old, pawn.Position, pawn.Map, ThingPlaceMode.Near);
+            }
+            pawn.equipment.AddEquipment(toEquip);
+            return true;
         }
 
         public static VerbProperties PrimaryVerb(ThingDef def)
